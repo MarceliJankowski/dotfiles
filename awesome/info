@@ -1,0 +1,18 @@
+Setup:
+$ mkdir -p ~/.config/awesome
+$ ln -s ${DOTFILES}/awesome/rc.lua ~/.config/awesome/rc.lua
+$ ln -s ${DOTFILES}/awesome/theme.lua ~/.config/awesome/theme.lua
+
+My config also uses several widgets:
+  - network-manager-applet:
+    install: changes based on distro
+    widgets:
+      * Network widget
+
+  - awesome-wm-widgets:
+    URL: https://pavelmakhov.com/awesome-wm-widgets
+    install: $ git clone https://github.com/streetturtle/awesome-wm-widgets ~/.config/awesome/awesome-wm-widgets
+    widgets:
+      * Battery widget
+      * Brightness widget
+      * Volume widget
