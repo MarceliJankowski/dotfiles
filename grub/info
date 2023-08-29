@@ -1,0 +1,6 @@
+Info:
+After updating grub config file you need to regenerate 'grub.cfg', otherwise config changes won't take effect.
+Command for doing so: $ sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+Setup:
+$ sudo ln -s ${DOTFILES}/grub/grub /etc/default/grub
