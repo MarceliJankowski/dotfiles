@@ -1,0 +1,21 @@
+Info:
+  - zprofile is only executed once when you log in to your account
+
+Setup:
+$ mkdir -p ~/.config/zsh
+$ ln -s ${DOTFILES}/zsh/zshrc ~/.zshrc
+$ ln -s ${DOTFILES}/zsh/exports.zsh ~/.config/zsh/exports.zsh
+$ ln -s ${DOTFILES}/zsh/aliases.zsh ~/.config/zsh/aliases.zsh
+
+Run to symlink zprofile (automatically starts Xorg session):
+$ ln -s ${DOTFILES}/zsh/zprofile ~/.zprofile
+
+My zsh config uses several plugins:
+  - oh-my-zsh (framework)
+    Install: $ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+  - zsh-syntax-highlighting (plugin)
+    Clone: $ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+
+  - zsh-autosuggestions (plugin)
+    Clone: $ git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
