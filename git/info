@@ -1,0 +1,2 @@
+Setup:
+$ ln -s ${DOTFILES}/git/gitconfig ~/.gitconfig
