@@ -1,0 +1,5 @@
+Setup:
+$ ln -s ${DOTFILES}/tmux/tmux.conf ~/.tmux.conf
+
+My tmux config uses 'tpm' plugin manager.
+Clone command: $ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
