@@ -1,0 +1,5 @@
+Setup:
+$ ln -s ${DOTFILES}/xorg/xinitrc.sh ~/.xinitrc
+
+Run to enable Polish character support:
+$ sudo ln -s ${DOTFILES}/xorg/10-keyboard.conf /usr/share/X11/xorg.conf.d/10-keyboard.conf
