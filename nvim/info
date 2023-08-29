@@ -1,0 +1,4 @@
+Setup:
+$ mkdir -p ~/.config/nvim
+$ ln -s ${DOTFILES}/nvim ~/.config/nvim
+$ mkdir ~/notes # this one is optional
