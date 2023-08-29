@@ -1,0 +1,3 @@
+Setup:
+$ mkdir -p ~/.config/alacritty
+$ ln -s ${DOTFILES}/alacritty/alacritty.yml ~/.config/alacritty/alacritty.yml
