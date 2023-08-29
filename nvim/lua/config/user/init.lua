@@ -1,0 +1,6 @@
+require("config/user/options")
+require("config/user/colorscheme") -- comes after options to overwrite them (set transparent background)
+require("config/user/autoCommands")
+require("config/user/keymaps")
+require("config/user/macros")
+require("config/user/netrw")
