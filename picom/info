@@ -1,0 +1,3 @@
+Setup:
+$ mkdir -p ~/.config/picom
+$ ln -s  ${DOTFILES}/picom/picom.conf ~/.config/picom/picom.conf
