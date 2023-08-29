@@ -1,0 +1,2 @@
+Setup:
+$ sudo ln -s ${DOTFILES}/pacman/pacman.conf /etc/pacman.conf
