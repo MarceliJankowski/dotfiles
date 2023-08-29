@@ -1,0 +1,19 @@
+[user]
+	email = marcelijankowski123@gmail.com
+	name = Marceli Jankowski
+[credential]
+	helper = store ; https://git-scm.com/docs/git-credential-store
+[alias]
+	lg = log --oneline
+	st = status -s
+	ls = ls-files
+  lc = !git log --oneline | head -n1 ; last commit
+  lci = !git log --oneline | head -n1 | cut -d ' ' -f 1 ; last commit identifier
+  cc = !git log --oneline | wc -l ; commit count
+  sf = !git show --name-only ; show files
+[core]
+	editor = nvim
+[help]
+	autocorrect = 1
+[init]
+	defaultBranch = main
