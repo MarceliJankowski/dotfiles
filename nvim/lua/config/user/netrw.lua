@@ -59,9 +59,17 @@ local function applyNetrwMappings()
 
 		vim.cmd("normal %") -- prompts user to create new file
 
-		local createdFile = vim.fn.getreg("%")
+		-- check if new file was created (and automatically opened) or user aborted (pressed 'ESC')
+		if vim.bo.filetype ~= "netrw" then
+			local createdFile = vim.fn.getreg("%")
 
-		vim.cmd("write | Explore | call cursor(" .. cursorPosition .. ") | bdelete " .. createdFile)
+			vim.cmd("write | Explore | call cursor(" .. cursorPosition .. ") | bd " .. createdFile)
+		else
+			print("file creation aborted")
+
+			-- restore cursor position (sometimes after aborting cursor moves to seemingly random line)
+			vim.cmd("call cursor(" .. cursorPosition .. ")")
+		end
 	end, optsRecursive)
 
 	-- create new file and edit it
