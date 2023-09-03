@@ -14,6 +14,8 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 -- widgets
+local battery_widget = require("awesome-wm-widgets.battery-widget.battery")
+local brightness_widget = require("awesome-wm-widgets.brightness-widget.brightness")
 local logout_menu_widget = require("awesome-wm-widgets.logout-menu-widget.logout-menu")
 local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 
@@ -262,7 +264,22 @@ awful.screen.connect_for_each_screen(function(s)
 			layout = wibox.layout.fixed.horizontal,
 
 			blankwidget,
+			brightness_widget({
+				program = "brightnessctl", -- program for getting brightness info
+				tooltip = true, -- display brigheness level on hover
+				timeout = 10, -- refresh rate
+				type = "icon_and_text",
+				font = "FiraCode NF",
+				percentage = true,
+			}),
+			blankwidget,
 			wibox.widget.systray(), -- systray widget is the nm-applet in this setup
+			blankwidget,
+			battery_widget({
+				display_notification = true, -- display info popup on hover
+				show_current_level = true,
+				font = "FiraCode NF",
+			}),
 			blankwidget,
 			volume_widget({
 				device = "default",
@@ -293,6 +310,15 @@ root.buttons(gears.table.join(
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
+	-- brightness control:
+	awful.key({ modkey }, ";", function()
+		brightness_widget:inc()
+	end, { description = "increase brightness", group = "brightness" }),
+
+	awful.key({ modkey, "Shift" }, ";", function()
+		brightness_widget:dec()
+	end, { description = "decrease brightness", group = "brightness" }),
+
 	-- volume control:
 	awful.key({ modkey }, "]", function()
 		volume_widget:inc(5)
