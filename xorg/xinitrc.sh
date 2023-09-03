@@ -8,17 +8,11 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
 	unset f
 fi
 
-# set monitor layout (generate this file with xrandr/arandr)
-~/.screenlayout/monitor-layout.sh
-
 # start compositor
 picom &
 
 # bind capslock to escape
 setxkbmap -option "caps:escape"
-
-# set rival mouse DPI
-rivalcfg -s 800
 
 # set 'awesome' as the default WM in case no arguments were passed to this script
 session=${1:-awesome}
