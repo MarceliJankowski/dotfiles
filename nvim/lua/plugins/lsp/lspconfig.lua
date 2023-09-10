@@ -26,13 +26,31 @@ return {
 		lspconfig.cssls.setup({})
 		lspconfig.cssmodules_ls.setup({})
 		lspconfig.dockerls.setup({})
-		lspconfig.emmet_ls.setup({})
 		lspconfig.html.setup({})
 		lspconfig.jsonls.setup({})
 		lspconfig.marksman.setup({})
 		lspconfig.sqlls.setup({})
 		lspconfig.lemminx.setup({})
 		lspconfig.yamlls.setup({})
+		lspconfig.phpactor.setup({})
+
+		lspconfig.emmet_ls.setup({
+			filetypes = {
+				"css",
+				"eruby",
+				"html",
+				"javascript",
+				"javascriptreact",
+				"less",
+				"sass",
+				"scss",
+				"svelte",
+				"pug",
+				"typescriptreact",
+				"vue",
+				"php",
+			},
+		})
 
 		lspconfig.lua_ls.setup({
 			settings = {

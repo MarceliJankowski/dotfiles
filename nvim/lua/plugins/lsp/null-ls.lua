@@ -10,7 +10,7 @@ return {
 		local formatting = null_ls.builtins.formatting -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
 
 		-- diagnostics
-		-- local diagnostics = null_ls.builtins.diagnostics -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
+		local diagnostics = null_ls.builtins.diagnostics -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
 
 		-- format on save group
 		local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
@@ -21,7 +21,9 @@ return {
 				formatting.stylua, -- formatter for lua
 				formatting.prettierd, -- faster prettier
 				formatting.shfmt, -- shell formatter
+				formatting.phpcsfixer, -- php formatter
 
+				diagnostics.phpstan, -- php linter
 				-- diagnostics.eslint_d, -- faster eslint
 			},
 
