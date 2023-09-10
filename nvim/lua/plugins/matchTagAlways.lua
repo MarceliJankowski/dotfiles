@@ -9,6 +9,7 @@ return {
 			xhtml = 1,
 			xml = 1,
 			jinja = 1,
+			php = 1,
 		}
 	end,
 }
