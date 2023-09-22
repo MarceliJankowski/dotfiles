@@ -33,6 +33,12 @@ return {
 		lspconfig.lemminx.setup({})
 		lspconfig.yamlls.setup({})
 		lspconfig.phpactor.setup({})
+		lspconfig.clangd.setup({
+			cmd = {
+				"clangd",
+				"--offset-encoding=utf-16",
+			},
+		})
 
 		lspconfig.emmet_ls.setup({
 			filetypes = {

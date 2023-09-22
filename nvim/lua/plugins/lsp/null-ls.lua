@@ -18,10 +18,11 @@ return {
 		null_ls.setup({
 			-- sources need to be installed on the system and be available without need for providing path
 			sources = {
-				formatting.stylua, -- formatter for lua
+				formatting.stylua, -- lua formatter
 				formatting.prettierd, -- faster prettier
 				formatting.shfmt, -- shell formatter
 				formatting.phpcsfixer, -- php formatter
+				formatting.clang_format, -- c formatter
 
 				diagnostics.phpstan, -- php linter
 				-- diagnostics.eslint_d, -- faster eslint
