@@ -68,6 +68,9 @@ map("n", "<leader>bo", "<Cmd>write | %bd | edit # | bd #<CR>", opts) -- '%bd' de
 -- write to current buffer and edit new unnamed buffer
 map({ "n", "i" }, "<C-t>", "<Cmd>write | enew<CR>", opts)
 
+-- go to newer cursor position in jump list ('TAB' and 'CTRL-I' both correspond to the same keycode)
+map("n", "<C-n>", "<C-i>", opts)
+
 -- go to the next buffer
 map("n", "<Tab>", "<Cmd>bnext<CR>", opts)
 
