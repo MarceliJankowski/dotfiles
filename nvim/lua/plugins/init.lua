@@ -1,8 +1,13 @@
 -- plugins with no/minimal config required
 return {
+
 	--------------------------------------------------
-	--               FILE NAVIGATION                --
+	--                  UTILITIES                   --
 	--------------------------------------------------
+
+	"ntpeters/vim-better-whitespace", -- highlights trailing whitespace
+
+	"kevinhwang91/nvim-bqf", -- better quickfix window
 
 	"kshenoy/vim-signature", -- displays and manages marks
 
@@ -23,12 +28,6 @@ return {
 	},
 
 	{ "kaicataldo/material.vim", branch = "main", priority = 1000, lazy = false }, -- color scheme
-
-	--------------------------------------------------
-	--                  UTILITIES                   --
-	--------------------------------------------------
-
-	"ntpeters/vim-better-whitespace", -- highlights trailing whitespace
 
 	--------------------------------------------------
 	--              MOTION RELATED                  --

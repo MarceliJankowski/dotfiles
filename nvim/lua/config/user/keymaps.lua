@@ -117,6 +117,20 @@ map("n", "<leader>{", "<C-w>K", opts)
 map("n", "<leader>}", "<C-w>J", opts)
 
 --------------------------------------------------
+--          QUICKFIX LIST IMPROVEMENTS          --
+--------------------------------------------------
+
+-- open quickfix window
+map("n", "<M-q>", "<Cmd>copen<CR>")
+
+-- close quickfix window
+map("n", "<M-Q>", "<Cmd>cclose<CR>")
+
+-- move through quickfix entries
+map("n", "<M-n>", "<cmd>cnext<CR>zz")
+map("n", "<M-N>", "<cmd>cprev<CR>zz")
+
+--------------------------------------------------
 --                 COMMAND LINE                 --
 --------------------------------------------------
 
