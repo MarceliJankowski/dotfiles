@@ -23,6 +23,7 @@ return {
 				formatting.shfmt, -- shell formatter
 				formatting.phpcsfixer, -- php formatter
 				formatting.clang_format, -- c formatter
+				formatting.latexindent, -- LaTeX formatter
 
 				diagnostics.phpstan, -- php linter
 				-- diagnostics.eslint_d, -- faster eslint
