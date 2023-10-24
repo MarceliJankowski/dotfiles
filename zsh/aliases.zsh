@@ -22,7 +22,6 @@ alias curl="curl -w '\n'"
 alias v="nvim"
 alias vi="nvim"
 alias vim="nvim"
-alias rvim="nvim"
 alias nv="nvim"
 
 # clear (yeah...)
@@ -51,6 +50,7 @@ alias cls="clear"
 alias csl="clear"
 
 # other
+alias gdb="gdb --quiet" # get rid of GDB startup text
 alias notes="nvim $NOTES"
 alias docker-compse="docker-compose"
 alias t="tmux"
