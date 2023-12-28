@@ -26,7 +26,6 @@ alias nv="nvim"
 
 # clear (yeah...)
 alias c="clear"
-alias cc="clear"
 alias lcs="clear"
 alias cleare ="clear"
 alias clea="clear"
