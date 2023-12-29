@@ -92,6 +92,7 @@ return {
 				map("n", "gh", vim.lsp.buf.hover, mappingOpts)
 				map("n", "gi", vim.lsp.buf.implementation, mappingOpts)
 				map("n", "<leader>D", vim.lsp.buf.type_definition, mappingOpts)
+				map("n", "<leader>a", vim.lsp.buf.code_action, mappingOpts)
 				map("n", "<M-r>", vim.lsp.buf.rename, mappingOpts)
 
 				-- show line diagnostics automatically in hover window
