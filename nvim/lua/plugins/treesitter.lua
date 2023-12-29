@@ -47,11 +47,13 @@ return {
 			autopairs = {
 				enable = true, -- enable nvim-autopairs
 			},
+		})
 
-			context_commentstring = {
-				enable = true, -- enable nvim-ts-context-commentstring
-				enable_autocmd = false, -- disable autocmd so that this extension is only triggered when commenting (Comment.nvim plugin has a pre_hook for this one)
-			},
+		-- skip backwards compatibility routines and speed up loading
+		vim.g.skip_ts_context_commentstring_module = true
+
+		require("ts_context_commentstring").setup({
+			enable_autocmd = false, -- disable autocmd so that this extension is only triggered when commenting (Comment.nvim plugin has a pre_hook for this one)
 		})
 	end,
 }
