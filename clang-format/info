@@ -1,0 +1,5 @@
+Info:
+I use clang-format '-style=file' flag without the ':<format_file_path>' part, so that project config can take precedence.
+
+Setup:
+$ ln -s ${DOTFILES}/clang-format/clang-format.yml ~/.clang-format

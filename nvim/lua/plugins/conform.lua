@@ -1,5 +1,5 @@
 return {
-	"stevearc/conform.nvim", -- lightweight yet powerful formatter
+	"stevearc/conform.nvim", -- lightweight yet powerful formatter plugin
 	event = { "BufReadPre", "BufNewFile" },
 	opts = {
 		formatters_by_ft = {
@@ -20,6 +20,13 @@ return {
 			cpp = { "clang_format" },
 			cs = { "clang_format" },
 			tex = { "latexindent" },
+		},
+
+		formatters = {
+			clang_format = {
+				command = "clang-format",
+				args = { "--style=file", "--fallback-style=chromium" },
+			},
 		},
 
 		format_on_save = {

@@ -400,8 +400,14 @@ installZsh() {
 	[[ "$INSTALL_STATUS" != 'fail' ]] && addInstalledConfig 'zsh'
 }
 
+installClangFormat() {
+	echo "Installing: clang-format config"
+
+	symlink clang-format/clang-format.yml ~/.clang-format && addInstalledConfig 'clang-format'
+}
+
 installEverything() {
-	local readonly CONFIGS=("Alacritty" "Awesome" "Fonts" "Git" "GRUB" "Nvim" "Pacman" "Picom" "Tmux" "Xorg" "XorgPolishCharacterSupport" "Zsh")
+	local readonly CONFIGS=("Alacritty" "Awesome" "Fonts" "Git" "GRUB" "Nvim" "Pacman" "Picom" "Tmux" "Xorg" "XorgPolishCharacterSupport" "Zsh", "ClangFormat")
 
 	for CONFIG in "${CONFIGS[@]}"; do
 		install"$CONFIG" && echo
@@ -566,16 +572,17 @@ openInstallConfigsMenu() {
 
     - '1' alacritty
     - '2' awesome
-    - '3' fonts
-    - '4' git
-    - '5' grub ~ ROOT
-    - '6' nvim
-    - '7' pacman ~ ROOT
-    - '8' picom
-    - '9' tmux
-    - '10' xorg
-    - '11' 10-keyboard.conf (xorg polish character support) ~ ROOT
-    - '12' zsh
+    - '3' clang-format
+    - '4' fonts
+    - '5' git
+    - '6' grub ~ ROOT
+    - '7' nvim
+    - '8' pacman ~ ROOT
+    - '9' picom
+    - '10' tmux
+    - '11' xorg
+    - '12' 10-keyboard.conf (xorg polish character support) ~ ROOT
+    - '13' zsh
   "
 
 	while true; do
@@ -591,16 +598,17 @@ openInstallConfigsMenu() {
 			;;
 		'1' | 'alacritty') installAlacritty ;;
 		'2' | 'awesome') installAwesome ;;
-		'3' | 'fonts') installFonts ;;
-		'4' | 'git') installGit ;;
-		'5' | 'grub') installGRUB ;;
-		'6' | 'nvim') installNvim ;;
-		'7' | 'pacman') installPacman ;;
-		'8' | 'picom') installPicom ;;
-		'9' | 'tmux') installTmux ;;
-		'10' | 'xorg') installXorg ;;
-		'11' | '10-keyboard.conf') installXorgPolishCharacterSupport ;;
-		'12' | 'zsh') installZsh ;;
+		'3' | 'clang-format') installClangFormat ;;
+		'4' | 'fonts') installFonts ;;
+		'5' | 'git') installGit ;;
+		'6' | 'grub') installGRUB ;;
+		'7' | 'nvim') installNvim ;;
+		'8' | 'pacman') installPacman ;;
+		'9' | 'picom') installPicom ;;
+		'10' | 'tmux') installTmux ;;
+		'11' | 'xorg') installXorg ;;
+		'12' | '10-keyboard.conf') installXorgPolishCharacterSupport ;;
+		'13' | 'zsh') installZsh ;;
 		*) echo "Invalid option: '${OPTION}'" ;;
 		esac
 
