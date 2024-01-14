@@ -3,4 +3,4 @@ I use 'Windows Compatible' nerd fonts because those were the only ones that work
 
 Setup:
 $ mkdir -p ~/.local/share/fonts
-$ symlink ${DOTFILES}/fonts/nerdFonts ~/.local/share/fonts/nerdFonts
+$ ln -s ${DOTFILES}/fonts/nerdFonts ~/.local/share/fonts/nerdFonts
