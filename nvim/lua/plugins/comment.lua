@@ -4,7 +4,12 @@ return {
 		"JoosepAlviste/nvim-ts-context-commentstring", -- context aware commenting
 	},
 	config = function()
-		-- KEYMAPS (enable recursive mappings because Comment.nvim doesn't expose CLI way of commenting stuff out)
+		-- KEYMAPS (enable recursive mappings because Comment.nvim doesn't expose API for commenting stuff out)
+		vim.keymap.set("n", "<C-/>", "gcc", { remap = true })
+		vim.keymap.set({ "v", "x" }, "<C-/>", "gc", { remap = true })
+		vim.keymap.set("i", "<C-/>", "<Esc>gccA ", { remap = true })
+
+		-- TMUX registers <C-/> as 
 		vim.keymap.set("n", "", "gcc", { remap = true })
 		vim.keymap.set({ "v", "x" }, "", "gc", { remap = true })
 		vim.keymap.set("i", "", "<Esc>gccA ", { remap = true })

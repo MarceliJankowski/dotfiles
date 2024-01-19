@@ -156,8 +156,9 @@ map({ "v", "x" }, "J", "j", opts)
 --           INSERT MODE IMPROVEMENTS           --
 --------------------------------------------------
 
--- delete word with <C-BS> (my terminal emulator registers <C-BS> as <C-h>)
-map("i", "<C-h>", "<C-w>", opts)
+-- delete preceding word
+map("i", "<C-BS>", "<C-w>", opts)
+map("i", "<C-h>", "<C-w>", opts) -- TMUX registers <C-BS> as <C-h>
 
 -- shift tab
 map("i", "<S-Tab>", "<C-d>", opts)
