@@ -567,6 +567,7 @@ openInstallConfigsMenu() {
     ##################################################
     # pick symbol/name corresponding to desired option/config
 
+    - 'q' quit/exit
     - 'u' go back to main menu
     - 'i' view installed configs
 
@@ -591,6 +592,7 @@ openInstallConfigsMenu() {
 		clear
 
 		case "$OPTION" in
+		'q') exit 0 ;;
 		'u') return 0 ;;
 		'i')
 			viewInstalledConfigs
