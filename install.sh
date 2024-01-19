@@ -235,7 +235,7 @@ installAlacritty() {
 	local readonly ALACRITTY_DIR=${HOME}/.config/alacritty
 
 	createDirIfItDoesntExist $ALACRITTY_DIR &&
-		symlink alacritty/alacritty.yml ${ALACRITTY_DIR}/alacritty.yml &&
+		symlink alacritty/alacritty.toml ${ALACRITTY_DIR}/alacritty.toml &&
 		addInstalledConfig 'alacritty'
 }
 
