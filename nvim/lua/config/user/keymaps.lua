@@ -116,6 +116,12 @@ map("n", "<leader>]", "<C-w>L", opts)
 map("n", "<leader>{", "<C-w>K", opts)
 map("n", "<leader>}", "<C-w>J", opts)
 
+-- move between panes
+map({ "n", "v" }, "<c-h>", "<c-w>h", opts)
+map({ "n", "v" }, "<c-l>", "<c-w>l", opts)
+map({ "n", "v" }, "<c-k>", "<c-w>k", opts)
+map({ "n", "v" }, "<c-j>", "<c-w>j", opts)
+
 --------------------------------------------------
 --          QUICKFIX LIST IMPROVEMENTS          --
 --------------------------------------------------

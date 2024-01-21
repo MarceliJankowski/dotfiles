@@ -60,10 +60,4 @@ return {
 	"maxmellon/vim-jsx-pretty", -- JSX highlighting
 
 	"yuezk/vim-js", -- recommended by vim-jsx-pretty
-
-	--------------------------------------------------
-	--                   TMUX                       --
-	--------------------------------------------------
-
-	"christoomey/vim-tmux-navigator", -- seamless vim/tmux navigation (requires tween plugin on the tmux side)
 }
