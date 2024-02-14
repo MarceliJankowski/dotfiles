@@ -1,10 +1,6 @@
 return {
 	"williamboman/mason.nvim", -- interface for managing external editor tooling (LSP, linters, formatters, and so on)
-	dependencies = {
-		"williamboman/mason-lspconfig.nvim",
-		"WhoIsSethDaniel/mason-tool-installer.nvim",
-	},
-	config = {
+	opts = {
 		ui = {
 			-- Whether to automatically check for new versions when opening the :Mason window.
 			check_outdated_packages_on_open = true,
