@@ -15,7 +15,7 @@ return {
 			yaml = { "prettierd" },
 			markdown = { "prettierd" },
 			sh = { "shfmt" },
-			php = { "phpcsfixer" },
+			php = { "php_cs_fixer" },
 			c = { "clang_format" },
 			cpp = { "clang_format" },
 			cs = { "clang_format" },

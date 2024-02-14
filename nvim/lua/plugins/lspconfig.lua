@@ -1,6 +1,11 @@
 return {
 	"neovim/nvim-lspconfig", -- configs for neovim LSP client
-	event = { "BufReadPre", "BufNewFile" },
+	lazy = false,
+	dependencies = {
+		-- these two need to run first, so that servers can be automatically installed (see: 'help mason-lspconfig')
+		"williamboman/mason.nvim",
+		"williamboman/mason-lspconfig.nvim",
+	},
 	config = function()
 		--------------------------------------------------
 		--                   DEFAULTS                   --
@@ -33,12 +38,7 @@ return {
 		lspconfig.lemminx.setup({})
 		lspconfig.yamlls.setup({})
 		lspconfig.phpactor.setup({})
-		lspconfig.clangd.setup({
-			cmd = {
-				"clangd",
-				"--offset-encoding=utf-16",
-			},
-		})
+		lspconfig.clangd.setup({})
 
 		lspconfig.emmet_ls.setup({
 			filetypes = {
@@ -75,8 +75,9 @@ return {
 		})
 
 		--------------------------------------------------
-		--                   SERVERS                    --
+		--                 AUTOCOMMANDS                 --
 		--------------------------------------------------
+
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 			callback = function(ev)
@@ -115,6 +116,25 @@ return {
 		})
 
 		--------------------------------------------------
+		--   FIX RED HIGHLIGHTS IN HOVER DEFINITIONS    --
+		--------------------------------------------------
+		-- fixes symbols like '_' being highlighted in red
+
+		local fixRedHighlightsInHoverDefinitionsGroup =
+			vim.api.nvim_create_augroup("fixRedHighlightsInHoverDefinitions", { clear = true })
+
+		vim.api.nvim_create_autocmd("FileType", {
+			group = fixRedHighlightsInHoverDefinitionsGroup,
+			pattern = "*",
+			callback = function()
+				if vim.bo.filetype ~= "markdown" then
+					vim.cmd("highlight link markdownError NONE")
+				end
+			end,
+			desc = "fix red highlights in hover definitions by disabling markdownError highlighting (doesn't affect markdown filetype)",
+		})
+
+		--------------------------------------------------
 		--                   VISUALS                    --
 		--------------------------------------------------
 
@@ -132,25 +152,6 @@ return {
 			underline = true,
 			update_in_insert = false,
 			severity_sort = true,
-		})
-
-		--------------------------------------------------
-		--   FIX RED HIGHLIGHTS IN HOVER DEFINITIONS    --
-		--------------------------------------------------
-		-- fixes symbols like '_' being highlighted in red
-
-		local fixRedHighlightsInHoverDefinitionsGroup =
-			vim.api.nvim_create_augroup("fixRedHighlightsInHoverDefinitions", { clear = true })
-
-		vim.api.nvim_create_autocmd("FileType", {
-			group = fixRedHighlightsInHoverDefinitionsGroup,
-			pattern = "*",
-			callback = function()
-				if vim.bo.filetype ~= "markdown" then
-					vim.cmd("highlight link markdownError NONE")
-				end
-			end,
-			desc = "fix red highlights in hover definitions by disabling markdownError highlighting (doesn't affect markdown filetype)",
 		})
 	end,
 }
