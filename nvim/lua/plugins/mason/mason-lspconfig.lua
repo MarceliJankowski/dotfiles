@@ -1,7 +1,7 @@
 return {
 	"williamboman/mason-lspconfig.nvim", -- bridges 'mason' with 'lspconfig', making it easier to use both plugins together
-
-	config = {
+	dependencies = "williamboman/mason.nvim",
+	opts = {
 		-- A list of servers to automatically install if they're not already installed. Example: { "rust_analyzer@nightly", "sumneko_lua" }
 		-- This setting has no relation with the `automatic_installation` setting.
 		ensure_installed = {},
