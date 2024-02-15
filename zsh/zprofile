@@ -1,3 +1,3 @@
-# start xorg session automatically after loging into tty1
+# start xorg session automatically after logging into tty1
 # useful webpage: https://wiki.archlinux.org/title/Xinit#Autostart_X_at_login
 [[ -z "$DISPLAY" && "$(tty)" = '/dev/tty1' ]] && exec startx
