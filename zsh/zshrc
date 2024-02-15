@@ -6,7 +6,7 @@
 HISTSIZE=10000
 
 # number of history lines that will be saved to the history file when the shell session gets terminated (history file is used to restore history every time a new shell session is opened)
-SAVEHIST=$HISTSIZE
+SAVEHIST="$HISTSIZE"
 
 # adjacent repeated command executions won't be saved into history (helps with redundant history pollution and works like: 'history | uniq')
 HISTCONTROL=ignoreboth
@@ -29,16 +29,16 @@ bindkey -v
 VI_MODE_SET_CURSOR=true
 
 export readonly ZSH="${HOME}/.oh-my-zsh" # path to my oh-my-zsh installation
-export readonly ZSH_THEME="fwalch"
+export readonly ZSH_THEME='fwalch'
 
-source ${ZSH}/oh-my-zsh.sh
+source "${ZSH}/oh-my-zsh.sh"
 
 ##################################################
 #                  USER CONFIG                   #
 ##################################################
 
-source ${HOME}/.config/zsh/aliases.zsh
-source ${HOME}/.config/zsh/exports.zsh
+source "${HOME}/.config/zsh/aliases.zsh"
+source "${HOME}/.config/zsh/exports.zsh"
 
 # enable <C-Backspace> keymap
 bindkey "^H" backward-kill-word
