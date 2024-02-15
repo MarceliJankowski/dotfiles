@@ -53,4 +53,3 @@ alias gdb="gdb --quiet" # get rid of GDB startup text
 alias notes="nvim $NOTES"
 alias docker-compse="docker-compose"
 alias t="tmux"
-alias r="ranger"
