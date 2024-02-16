@@ -1,124 +1,239 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -o pipefail
+
+# to get info on this script run it with '-h' flag
 
 ##################################################
-#                   VARIABLES                    #
+#                GLOBAL VARIABLES                #
 ##################################################
 
 readonly SCRIPT_NAME=$(basename "$0")
-readonly SCRIPT_INTERNAL_ERROR=255
 
-INSTALLED_CONFIGS=() # use addInstalledConfig() for adding elements
+readonly TRUE=0
+readonly FALSE=1
 
-# options (user can tweak those)
-VERBOSE_MODE='false'
-DOTFILES=~/dotfiles
+readonly INVALID_FLAG_ERROR_CODE=1
+readonly INVALID_ARG_ERROR_CODE=2
+readonly MISSING_ARG_ERROR_CODE=3
+readonly TOO_MANY_ARGS_ERROR_CODE=4
+readonly INTERNAL_ERROR_CODE=255
+
+# use addInstalledConfig() to add configs
+INSTALLED_CONFIGS=()
+
+# configs which can be installed with this script (names need to be written in cammelCase)
+readonly CONFIGS=(
+	'alacritty'
+	'awesome'
+	'clangFormat'
+	'fonts'
+	'git'
+	'grub'
+	'nvim'
+	'pacman'
+	'picom'
+	'prettier'
+	'tmux'
+	'xorg'
+	'zsh'
+)
+
+readonly MAX_ARG_COUNT=${#CONFIGS[@]}
+
+# options (can be set through CLI or TUI)
+VERBOSE_MODE=$FALSE
+DOTFILES="${HOME}/dotfiles"
+ROOT_CMD='sudo'
+
+readonly MANUAL="
+NAME
+      $SCRIPT_NAME - install dotfile configs
+
+SYNOPSIS
+      $SCRIPT_NAME [-h] [-v] [-d path] [-r cmd] [config]...
+
+DESCRIPTION
+      Install configs from dotfiles.
+      Some configs require root privileges, in that case '${ROOT_CMD}' is used by default to install them.
+
+      User can choose configs to install by either supplying them at the command-line (in cammelCase),
+      or interactively through built-in TUI (default).
+
+OPTIONS
+      -h
+          Get help, print out the manual and exit.
+
+      -v
+          Turn on VERBOSE_MODE (increases output).
+
+      -d path
+          Set path to dotfiles directory / Update DOTFILES variable with 'path'.
+
+      -r cmd
+          Set command for obtaining root privileges (defaults to '${ROOT_CMD}').
+
+EXIT CODES
+      Exit code indicates whether $SCRIPT_NAME successfully executed, or failed for some reason.
+      Different exit codes indicate different failure causes:
+
+      0  $SCRIPT_NAME successfully run, without raising any exceptions.
+
+      $INVALID_FLAG_ERROR_CODE  Invalid flag supplied.
+
+      $INVALID_ARG_ERROR_CODE  Invalid argument supplied.
+
+      $MISSING_ARG_ERROR_CODE  Missing mandatory argument.
+
+      $TOO_MANY_ARGS_ERROR_CODE  Too many arguments supplied (max number: ${MAX_ARG_COUNT}).
+
+      $INTERNAL_ERROR_CODE  Developer fuc**d up, blame him!
+"
 
 ##################################################
-#                   UTILITIES                    #
+#               UTILITY FUNCTIONS                #
 ##################################################
 
-# @desc log `message` to std error and exit with SCRIPT_INTERNAL_ERROR
-throwInternalErr() {
-	local MESSAGE="$1"
+# @desc print global MANUAL variable
+printManual() {
+	[[ $# -ne 0 ]] && throwInternalErr "printManual() expects no arguments"
 
-	[[ $# -ne 1 ]] && MESSAGE="throwInternalErr() expects 'message' argument"
-
-	echo -e "[INTERNAL ERROR] - $MESSAGE" 1>&2
-
-	exit $SCRIPT_INTERNAL_ERROR
+	echo "$MANUAL" | sed -e '1d' -e '$d'
 }
 
-# @desc log `message` to std error
+# @desc log `message` to stderr and exit with INTERNAL_ERROR_CODE
+throwInternalErr() {
+	local message="$1"
+
+	[[ $# -ne 1 ]] && message="throwInternalErr() expects 'message' argument"
+
+	echo -e "[INTERNAL_ERROR] - $message" 1>&2
+
+	exit $INTERNAL_ERROR_CODE
+}
+
+# @desc log `message` to stderr
 logErr() {
 	[[ $# -ne 1 ]] && throwInternalErr "logErr() expects 'message' argument"
 
-	local readonly MESSAGE="$1"
-	echo -e "[ERROR] - $MESSAGE" 1>&2
+	local -r message="$1"
+	echo -e "[ERROR] - $message" 1>&2
 }
 
-# @desc log `message` to std error and exit with `exitCode`
+# @desc log warning `message` to stdout
+logWarning() {
+	[[ $# -ne 1 ]] && throwInternalErr "logWarning() expects 'message' argument"
+
+	local -r message="$1"
+	echo -e "[WARNING] - $message"
+}
+
+# @desc log `message` to stderr and exit with `exitCode`
 throwErr() {
 	[[ $# -ne 2 ]] && throwInternalErr "throwErr() expects 'message' and 'exitCode' arguments"
 
-	local readonly MESSAGE="$1"
-	local readonly EXIT_CODE="$2"
+	local -r message="$1"
+	local -r exit_code="$2"
 
-	logErr "$MESSAGE"
-
-	exit $EXIT_CODE
+	logErr "$message"
+	exit "$exit_code"
 }
 
-# @desc log `message` to std output if VERBOSE_MODE is on
+# @desc log `message` to stdout if VERBOSE_MODE is on
 logIfVerbose() {
 	[[ $# -ne 1 ]] && throwInternalErr "logIfVerbose() expects 'message' argument"
 
-	local readonly MESSAGE="$1"
+	local -r message="$1"
 
-	[[ "$VERBOSE_MODE" = 'true' ]] && echo "[VERBOSE] - $1"
+	[[ $VERBOSE_MODE -eq $TRUE ]] && echo -e "[VERBOSE] - $message"
 }
 
 # @desc treat INSTALLED_CONFIGS array like a set (only add `config` if it isn't already there)
 addInstalledConfig() {
 	[[ $# -ne 1 ]] && throwInternalErr "addInstalledConfig() expects 'config' argument"
 
-	local readonly CONFIG="$1"
+	local -r config="$1"
+	local installed_config
 
-	for INSTALLED_CONFIG in "${INSTALLED_CONFIGS[@]}"; do
-		[[ "$INSTALLED_CONFIG" = "$CONFIG" ]] && return 0
+	# check if INSTALLED_CONFIGS contains `config`
+	for installed_config in "${INSTALLED_CONFIGS[@]}"; do
+		[[ "${installed_config}" = "${config}" ]] && return
 	done
 
-	INSTALLED_CONFIGS+=("$CONFIG")
+	# it doesn't
+	INSTALLED_CONFIGS+=("$config")
+}
+
+# @desc check if `cmd` is available on the system
+# @return 0 if it's available, 1 otherwise
+isCmdAvailable() {
+	[[ $# -ne 1 ]] && throwInternalErr "isCmdAvailable() expects 'cmd' argument"
+
+	local -r cmd="$1"
+	command -v "$cmd" &>/dev/null || return 1 # unavailable
+
+	return 0 # available
 }
 
 # @desc echo `input` string with trailing whitespace removed from both ends
 trim() {
 	[[ $# -ne 1 ]] && throwInternalErr "trim() expects 'input' argument"
 
-	local readonly INPUT="$1"
-	local readonly TRIMMED_INPUT=$(echo "$INPUT" | sed -e 's/^\s+//' -e 's/\s+$//')
+	local -r input="$1"
+	local -r trimmed_input=$(sed -e 's/^\s+//' -e 's/\s+$//' <<<"$input")
 
-	echo "$TRIMMED_INPUT"
+	echo "$trimmed_input"
 }
 
-# @desc ask user `question` and echo answer processed into boolean (true/false string)
+# @desc ask user `question` and process answer into boolean
+# @return TRUE if user agreed, FALSE otherwise
 askBooleanQuestion() {
 	[[ $# -ne 1 ]] && throwInternalErr "askBooleanQuestion() expects 'question' argument"
 
-	local readonly QUESTION="$1"
+	local -r question="$1"
 
-	read -p "$QUESTION [y/n] " INPUT
+	local input
+	read -p "$question [y/n] " input
+	readonly input
 
-	local readonly LOWERCASED_INPUT=$(echo "$INPUT" | tr '[:upper:]' '[:lower:]')
-	local readonly TRIMMED_LOWERCASED_INPUT=$(trim "$LOWERCASED_INPUT")
+	local -r lowercased_input=${input,,}
+	local -r trimmed_lowercased_input=$(trim "$lowercased_input")
 
-	if [[ "$TRIMMED_LOWERCASED_INPUT" = 'y' || "$TRIMMED_LOWERCASED_INPUT" = 'yes' ]]; then
-		echo 'true'
+	if [[ "$trimmed_lowercased_input" = 'y' || "$trimmed_lowercased_input" = 'yes' ]]; then
+		return $TRUE
 	else
-		echo 'false'
+		return $FALSE
 	fi
 }
 
 # @desc ask user to pick option and echo trimmed answer
 askToPickOption() {
-	read -p 'option: ' OPTION
-	TRIMMED_OPTION=$(trim "$OPTION")
+	[[ $# -ne 0 ]] && throwInternalErr "askToPickOption() expects no arguments"
 
-	echo "$TRIMMED_OPTION"
+	local option
+	read -p "option: " option
+	readonly option
+
+	trimmed_option=$(trim "$option")
+
+	echo "$trimmed_option"
 }
 
 # @desc format and print `menu`
 printMenu() {
 	[[ $# -ne 1 ]] && throwInternalErr "printMenu() expects 'menu' argument"
 
-	local readonly MENU="$1"
+	local -r menu="$1"
 
 	clear
-	echo -e "$MENU" | sed -e 's/^\s*//' -e '1d'
+	echo -e "$menu" | sed -e 's/^\s*//' -e '1d'
 }
 
 # @desc prompt user before proceeding
 askToProceed() {
-	echo -e "\n-- press 'ENTER' to proceed --"
+	[[ $# -ne 0 ]] && throwInternalErr "askToProceed() expects no arguments"
+
+	echo -e "\n-- press 'Enter' to proceed --"
 	read
 }
 
@@ -126,19 +241,19 @@ askToProceed() {
 cloneGitRepo() {
 	[[ $# -ne 2 ]] && throwInternalErr "cloneGitRepo() expects 'repository' and 'destination' arguments"
 
-	local readonly REPO="$1"
-	local readonly DESTINATION="$2"
+	local -r repo="$1"
+	local -r destination="$2"
 
-	logIfVerbose "cloning '${REPO}' into '${DESTINATION}'..."
+	logIfVerbose "cloning '${repo}' into '${destination}'..."
 
-	# this variable is left in global scope on purpose, as 'local' messes with capturing exit status
-	CLONE_GIT_REPO_CLONE_LOG=$(git clone --depth 1 "$REPO" "$DESTINATION" 2>&1)
+	local clone_git_repo_clone_log
+	clone_git_repo_clone_log=$(git clone --depth 1 "$repo" "$destination" 2>&1)
 
 	if [[ $? -eq 0 ]]; then
-		echo "Successfully cloned '${REPO}' into '${DESTINATION}'"
+		echo "Successfully cloned '${repo}' into '${destination}'"
 	else
-		logErr "failed to clone '${REPO}' into '${DESTINATION}'"
-		logErr "$CLONE_GIT_REPO_CLONE_LOG"
+		logErr "failed to clone '${repo}' into '${destination}'"
+		logErr "$clone_git_repo_clone_log"
 		return 1
 	fi
 }
@@ -148,50 +263,49 @@ cloneGitRepo() {
 symlink() {
 	[[ $# -lt 2 || $# -gt 3 ]] && throwInternalErr "symlink() expects 'symlinkOriginal', 'symlinkTarget' and optionally 'root' arguments"
 
-	local readonly SYMLINK_ORIGINAL=${DOTFILES}/${1}
-	local readonly SYMLINK_TARGET=$2
-	local readonly PERMISSIONS="$3"
+	local -r symlink_original="${DOTFILES}/${1}"
+	local -r symlink_target="$2"
+	local -r permissions="$3"
 
-	if [[ ! -e $SYMLINK_ORIGINAL ]]; then
-		logErr "symlinking failed: '${SYMLINK_ORIGINAL}' doesn't exist!"
+	if [[ ! -e "$symlink_original" ]]; then
+		logErr "symlinking failed: '${symlink_original}' doesn't exist!"
 		return 1
 	fi
 
-	if [[ -e $SYMLINK_TARGET && ! -L $SYMLINK_TARGET ]]; then
-		logErr "symlinking failed: '$SYMLINK_TARGET' already exists and is not a symbolic link (this requires manual intervention)"
-		return 2
+	if [[ -e "$symlink_target" && ! -L "$symlink_target" ]]; then
+		logErr "symlinking failed: '$symlink_target' already exists and is not a symbolic link (this requires manual intervention)"
+		return 1
 	fi
 
-	if [[ -L $SYMLINK_TARGET ]]; then
-		local readonly REPLACE=$(askBooleanQuestion "Symlinking target: '${SYMLINK_TARGET}' already exists and is a symbolic link. Would you like to replace it?")
+	if [[ -L "$symlink_target" ]]; then
+		askBooleanQuestion "Symlinking target: '${symlink_target}' already exists and is a symbolic link. Would you like to replace it?"
+		if [[ $? -eq $TRUE ]]; then
+			logIfVerbose "removing ${symlink_target}..."
 
-		if [[ "$REPLACE" = 'true' ]]; then
-			logIfVerbose "removing ${SYMLINK_TARGET}..."
-
-			if [[ "$PERMISSIONS" = 'root' ]]; then
-				sudo rm ${SYMLINK_TARGET}
+			if [[ "$permissions" = 'root' ]]; then
+				"$ROOT_CMD" rm ${symlink_target}
 			else
-				rm ${SYMLINK_TARGET}
+				rm ${symlink_target}
 			fi
 		else
 			return 0
 		fi
 	fi
 
-	logIfVerbose "creating symbolic link between '${SYMLINK_ORIGINAL}' and '${SYMLINK_TARGET}'"
+	logIfVerbose "creating symbolic link between '${symlink_original}' and '${symlink_target}'"
 
-	if [[ "$PERMISSIONS" = 'root' ]]; then
-		sudo ln -s ${SYMLINK_ORIGINAL} ${SYMLINK_TARGET}
+	if [[ "$permissions" = 'root' ]]; then
+		"$ROOT_CMD" ln -s ${symlink_original} ${symlink_target}
 	else
-		ln -s ${SYMLINK_ORIGINAL} ${SYMLINK_TARGET}
+		ln -s ${symlink_original} ${symlink_target}
 	fi
 
 	if [[ $? -ne 0 ]]; then
-		logErr "symlinking '${SYMLINK_ORIGINAL}' with '${SYMLINK_TARGET}' has failed"
-		return 3
+		logErr "symlinking '${symlink_original}' with '${symlink_target}' has failed"
+		return 1
 	fi
 
-	echo "Successfully symlinked '${SYMLINK_ORIGINAL}' with '${SYMLINK_TARGET}'"
+	echo "Successfully symlinked '${symlink_original}' with '${symlink_target}'"
 }
 
 # @desc check if `dirPath` exists and create it (and its parent directories) if it doesn't
@@ -199,29 +313,29 @@ symlink() {
 createDirIfItDoesntExist() {
 	[[ $# -lt 1 || $# -gt 2 ]] && throwInternalErr "createDirIfItDoesntExist() expects 'dirPath' and optionally 'root' arguments"
 
-	local readonly DIR_PATH=$1
-	local readonly PERMISSIONS="$2"
+	local -r dir_path="$1"
+	local -r permissions="$2"
 
-	if [[ -e $DIR_PATH && ! -d $DIR_PATH ]]; then
-		logErr "'${DIR_PATH}' already exists and is not a directory (this requires manual intervention)"
+	if [[ -e "$dir_path" && ! -d "$dir_path" ]]; then
+		logErr "'${dir_path}' already exists and is not a directory (this requires manual intervention)"
 		return 1
 	fi
 
-	if [[ ! -d $DIR_PATH ]]; then
-		logIfVerbose "'${DIR_PATH}' doesn't exist, creating it..."
+	if [[ ! -d "$dir_path" ]]; then
+		logIfVerbose "'${dir_path}' doesn't exist, creating it..."
 
-		if [[ "$PERMISSIONS" = 'root' ]]; then
-			sudo mkdir -p $DIR_PATH
+		if [[ "$permissions" = 'root' ]]; then
+			"$ROOT_CMD" mkdir -p "$dir_path"
 		else
-			mkdir -p $DIR_PATH
+			mkdir -p "$dir_path"
 		fi
 
 		if [[ $? -ne 0 ]]; then
-			logErr "creating '${DIR_PATH}' directory failed"
-			return 2
+			logErr "creating '${dir_path}' directory failed"
+			return 1
 		fi
 
-		echo "Successfully created '${DIR_PATH}' directory"
+		echo "Successfully created '${dir_path}' directory"
 	fi
 }
 
@@ -230,77 +344,92 @@ createDirIfItDoesntExist() {
 ##################################################
 
 installAlacritty() {
+	[[ $# -ne 0 ]] && throwInternalErr "installAlacritty() expects no arguments"
+
 	echo "Installing: alacritty config"
 
-	local readonly ALACRITTY_DIR=${HOME}/.config/alacritty
+	local -r alacritty_dir=~/.config/alacritty
 
-	createDirIfItDoesntExist $ALACRITTY_DIR &&
-		symlink alacritty/alacritty.toml ${ALACRITTY_DIR}/alacritty.toml &&
+	createDirIfItDoesntExist "$alacritty_dir" &&
+		symlink alacritty/alacritty.toml ${alacritty_dir}/alacritty.toml &&
 		addInstalledConfig 'alacritty'
 }
 
 installAwesome() {
+	[[ $# -ne 0 ]] && throwInternalErr "installAwesome() expects no arguments"
+
 	echo "Installing: awesome config"
 
-	local readonly AWESOME_WM_DIR=~/.config/awesome
+	local -r awesome_wm_dir=~/.config/awesome
 
-	createDirIfItDoesntExist $AWESOME_WM_DIR &&
-		symlink awesome/rc.lua ${AWESOME_WM_DIR}/rc.lua &&
-		symlink awesome/theme.lua ${AWESOME_WM_DIR}/theme.lua
+	createDirIfItDoesntExist "$awesome_wm_dir" &&
+		symlink awesome/rc.lua ${awesome_wm_dir}/rc.lua &&
+		symlink awesome/theme.lua ${awesome_wm_dir}/theme.lua
 
 	[[ $? -ne 0 ]] && return 1
 
-	local readonly CLONE_WIDGETS=$(askBooleanQuestion "awesome WM config requires 'awesome-wm-widgets' plugin. Would you like to clone it?")
-
-	if [[ "$CLONE_WIDGETS" = 'true' ]]; then
-		cloneGitRepo https://github.com/streetturtle/awesome-wm-widgets ~/.config/awesome/awesome-wm-widgets &&
-			addInstalledConfig 'awesome'
-	else
-		addInstalledConfig 'awesome'
+	askBooleanQuestion "awesome WM config requires 'awesome-wm-widgets' plugin. Would you like to clone it?"
+	if [[ $? -eq $TRUE ]]; then
+		cloneGitRepo https://github.com/streetturtle/awesome-wm-widgets ~/.config/awesome/awesome-wm-widgets || return 1
 	fi
+
+	addInstalledConfig 'awesome'
+}
+
+installClangFormat() {
+	[[ $# -ne 0 ]] && throwInternalErr "installClangFormat() expects no arguments"
+
+	echo "Installing: clang-format config"
+
+	symlink clang-format/clang-format.yml ~/.clang-format &&
+		addInstalledConfig 'clang-format'
 }
 
 installFonts() {
+	[[ $# -ne 0 ]] && throwInternalErr "installFonts() expects no arguments"
+
 	echo "Installing: fonts config"
 
-	local readonly FONTS_DIR=~/.local/share/fonts
+	local -r fonts_dir=~/.local/share/fonts
 
-	createDirIfItDoesntExist $FONTS_DIR &&
-		symlink fonts/nerdFonts ${FONTS_DIR}/nerdFonts &&
+	createDirIfItDoesntExist "$fonts_dir" &&
+		symlink fonts/nerdFonts ${fonts_dir}/nerdFonts &&
 		addInstalledConfig 'fonts'
 }
 
 installGit() {
+	[[ $# -ne 0 ]] && throwInternalErr "installGit() expects no arguments"
+
 	echo "Installing: git config"
 
-	symlink git/gitconfig ${HOME}/.gitconfig &&
+	symlink git/gitconfig ~/.gitconfig &&
 		addInstalledConfig 'git'
 }
 
-installGRUB() {
+installGrub() {
+	[[ $# -ne 0 ]] && throwInternalErr "installGrub() expects no arguments"
+
 	echo "Installing: GRUB config"
 
-	symlink grub/grub /etc/default/grub 'root'
-	[[ $? -ne 0 ]] && return 1
+	symlink grub/grub /etc/default/grub 'root' || return 1
 
-	local readonly REGENERATE=$(askBooleanQuestion "Would you like to regenerate 'grub.cfg' (otherwise GRUB config changes won't take effect)?")
-
-	if [[ "$REGENERATE" = 'true' ]]; then
-		sudo grub-mkconfig -o /boot/grub/grub.cfg &&
-			addInstalledConfig 'GRUB'
+	askBooleanQuestion "Would you like to regenerate 'grub.cfg' (otherwise GRUB config changes won't take effect)?"
+	if [[ $? -eq $TRUE ]]; then
+		local -r regenerate_cmd="$ROOT_CMD grub-mkconfig -o /boot/grub/grub.cfg"
+		regenerate_cmd
 
 		if [[ $? -ne 0 ]]; then
-			logErr "regenerating 'grub.cfg' failed (command: 'sudo grub-mkconfig -o /boot/grub/grub.cfg')"
-			return 2
+			logErr "regenerating 'grub.cfg' failed (command: '${installGrubRegenerateCmd}')"
+			return 1
 		fi
-
-		return 0
-	else
-		addInstalledConfig 'GRUB'
 	fi
+
+	addInstalledConfig 'GRUB'
 }
 
 installNvim() {
+	[[ $# -ne 0 ]] && throwInternalErr "installNvim() expects no arguments"
+
 	echo "Installing: nvim config"
 
 	symlink nvim ~/.config/nvim &&
@@ -309,6 +438,8 @@ installNvim() {
 }
 
 installPacman() {
+	[[ $# -ne 0 ]] && throwInternalErr "installPacman() expects no arguments"
+
 	echo "Installing: pacman config"
 
 	symlink pacman/pacman.conf /etc/pacman.conf 'root' &&
@@ -316,104 +447,109 @@ installPacman() {
 }
 
 installPicom() {
+	[[ $# -ne 0 ]] && throwInternalErr "installPicom() expects no arguments"
+
 	echo "Installing: picom config"
 
-	local readonly PICOM_DIR=~/.config/picom
+	local -r picom_dir=~/.config/picom
 
-	createDirIfItDoesntExist $PICOM_DIR &&
-		symlink picom/picom.conf ${PICOM_DIR}/picom.conf &&
+	createDirIfItDoesntExist "$picom_dir" &&
+		symlink picom/picom.conf ${picom_dir}/picom.conf &&
 		addInstalledConfig 'picom'
 }
 
+installPrettier() {
+	[[ $# -ne 0 ]] && throwInternalErr "installPrettier() expects no arguments"
+
+	echo "Installing: prettier config"
+	echo "prettier doesn't require seperate installation (read 'prettier/info')"
+}
+
 installTmux() {
+	[[ $# -ne 0 ]] && throwInternalErr "installTmux() expects no arguments"
+
 	echo "Installing: tmux config"
 
-	symlink tmux/tmux.conf ~/.tmux.conf
-	[[ $? -ne 0 ]] && return 1
+	symlink tmux/tmux.conf ~/.tmux.conf || return 1
 
-	local readonly CLONE=$(askBooleanQuestion "tmux config requires 'tpm' plugin manager. Would you like to clone it?")
-
-	if [[ "$CLONE" = 'true' ]]; then
-		cloneGitRepo https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm &&
-			addInstalledConfig 'tmux'
-	else
-		addInstalledConfig 'tmux'
+	askBooleanQuestion "tmux config requires 'tpm' plugin manager. Would you like to clone it?"
+	if [[ $? -eq $TRUE ]]; then
+		cloneGitRepo https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm || return 1
 	fi
+
+	addInstalledConfig 'tmux'
 }
 
 installXorg() {
+	[[ $# -ne 0 ]] && throwInternalErr "installXorg() expects no arguments"
+
 	echo "Installing: xorg config"
 
-	symlink xorg/xinitrc.sh ~/.xinitrc &&
-		addInstalledConfig 'xorg'
-}
+	symlink xorg/xinitrc.sh ~/.xinitrc || return 1
 
-installXorgPolishCharacterSupport() {
-	echo "Installing: 10-keyboard config"
+	askBooleanQuestion "[ROOT] - Would you like to also symlink '10-keyboard.conf' (enables Polish character support)?"
+	if [[ $? -eq $TRUE ]]; then
+		symlink xorg/10-keyboard.conf /usr/share/X11/xorg.conf.d/10-keyboard.conf 'root' || return 1
+	fi
 
-	symlink xorg/10-keyboard.conf /usr/share/X11/xorg.conf.d/10-keyboard.conf 'root' &&
-		addInstalledConfig '10-keyboard.conf'
+	addInstalledConfig 'xorg'
 }
 
 installZsh() {
+	[[ $# -ne 0 ]] && throwInternalErr "installZsh() expects no arguments"
+
 	echo "Installing: zsh config"
 
-	local readonly ZSH_CONFIGS_DIR=${HOME}/.config/zsh
+	local -r zsh_configs_dir=~/.config/zsh
 
 	symlink zsh/zshrc ~/.zshrc &&
-		createDirIfItDoesntExist $ZSH_CONFIGS_DIR &&
-		symlink zsh/aliases.zsh ${ZSH_CONFIGS_DIR}/aliases.zsh &&
-		symlink zsh/exports.zsh ${ZSH_CONFIGS_DIR}/exports.zsh
+		createDirIfItDoesntExist $zsh_configs_dir &&
+		symlink zsh/aliases.zsh ${zsh_configs_dir}/aliases.zsh &&
+		symlink zsh/exports.zsh ${zsh_configs_dir}/exports.zsh
 
 	[[ $? -ne 0 ]] && return 1
 
-	local readonly SYMLINK_ZPROFILE=$(askBooleanQuestion "Would you like to also symlink 'zprofile' (automatically starts Xorg session)?")
-	if [[ "$SYMLINK_ZPROFILE" = 'true' ]]; then
-		symlink zsh/zprofile ~/.zprofile
-		[[ $? -ne 0 ]] && return 1
+	askBooleanQuestion "Would you like to also symlink 'zprofile' (automatically starts Xorg session)?"
+	if [[ $? -eq $TRUE ]]; then
+		symlink zsh/zprofile ~/.zprofile || return 1
 	fi
 
 	# dependency installations are treated as independent events, failure of one won't prevent others from prompting/happening (but it will prevent adding 'zsh' to INSTALLED_CONFIGS array)
-	local INSTALL_STATUS
+	local is_installation_successful=$TRUE
 
-	local readonly INSTALL_OH_MY_ZSH=$(askBooleanQuestion "zsh config requires 'oh-my-zsh' framework. Would you like to install it?")
-	if [[ "$INSTALL_OH_MY_ZSH" = 'true' ]]; then
+	askBooleanQuestion "zsh config requires 'oh-my-zsh' framework. Would you like to install it?"
+	if [[ $? -eq $TRUE ]]; then
 		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 		if [[ $? -ne 0 ]]; then
 			logErr "'oh-my-zsh' installation failed"
-			INSTALL_STATUS="fail"
+			is_installation_successful=$FALSE
 		fi
 	fi
 
-	local readonly INSTALL_SYNTAX_HIGHLIGHTING=$(askBooleanQuestion "zsh config requires 'zsh-syntax-highlighting' plugin. Would you like to clone it?")
-	if [[ "$INSTALL_SYNTAX_HIGHLIGHTING" = 'true' ]]; then
+	askBooleanQuestion "zsh config requires 'zsh-syntax-highlighting' plugin. Would you like to clone it?"
+	if [[ $? -eq $TRUE ]]; then
 		cloneGitRepo https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-		[[ $? -ne 0 ]] && INSTALL_STATUS="fail"
+		[[ $? -ne 0 ]] && is_installation_successful=$FALSE
 	fi
 
-	local readonly INSTALL_AUTOSUGGESTIONS=$(askBooleanQuestion "zsh config requires 'zsh-autosuggestions' plugin. Would you like to clone it?")
-	if [[ "$INSTALL_AUTOSUGGESTIONS" = 'true' ]]; then
+	askBooleanQuestion "zsh config requires 'zsh-autosuggestions' plugin. Would you like to clone it?"
+	if [[ $? -eq $TRUE ]]; then
 		cloneGitRepo https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-		[[ $? -ne 0 ]] && INSTALL_STATUS="fail"
+		[[ $? -ne 0 ]] && is_installation_successful=$FALSE
 	fi
 
-	[[ "$INSTALL_STATUS" != 'fail' ]] && addInstalledConfig 'zsh'
-}
-
-installClangFormat() {
-	echo "Installing: clang-format config"
-
-	symlink clang-format/clang-format.yml ~/.clang-format && addInstalledConfig 'clang-format'
+	[[ $is_installation_successful -eq $TRUE ]] && addInstalledConfig 'zsh'
 }
 
 installEverything() {
-	local readonly CONFIGS=("Alacritty" "Awesome" "Fonts" "Git" "GRUB" "Nvim" "Pacman" "Picom" "Tmux" "Xorg" "XorgPolishCharacterSupport" "Zsh", "ClangFormat")
+	[[ $# -ne 0 ]] && throwInternalErr "installEverything() expects no arguments"
 
-	for CONFIG in "${CONFIGS[@]}"; do
-		install"$CONFIG" && echo
+	local config
+	for config in "${CONFIGS[@]}"; do
+		install${config^} && echo
 
 		if [[ $? -ne 0 ]]; then
-			logErr "$CONFIG installation failed"
+			logErr "$config installation failed"
 			break
 		fi
 	done
@@ -423,67 +559,19 @@ installEverything() {
 }
 
 ##################################################
-#                 CORE FUNCTIONS                 #
+#                 TUI FUNCTIONS                  #
 ##################################################
 
-printManual() {
-	local readonly MANUAL="
-NAME
-      $SCRIPT_NAME - installs configs from dotfiles
-
-SYNOPSIS
-      $SCRIPT_NAME [-h] [-v] [-d path]
-
-DESCRIPTION
-      Utility script meant for installing configs from dotfiles
-      Some configs require root privileges, in that case 'sudo' is being used to install them
-
-OPTIONS
-      -h
-          Get help, print out the manual and exit
-
-      -v
-          Turn on VERBOSE_MODE (increases output)
-
-      -d path
-          Set path to dotfiles directory / Update DOTFILES variable with 'path'
-
-EXIT CODES
-      Exit code indicates whether $SCRIPT_NAME successfully executed, or failed for some reason
-      Different exit codes indicate different failure causes
-
-      0  $SCRIPT_NAME successfully run, without raising any exceptions
-
-      1  User didn't supply mandatory flag argument
-
-      2  User supplied invalid option
-
-      $SCRIPT_INTERNAL_ERROR  Developer fuc**d up, blame him!
-"
-
-	echo "$MANUAL" | sed -e '1d' -e '$d'
-}
-
 openManual() {
-	printManual | less
-}
+	[[ $# -ne 0 ]] && throwInternalErr "openManual() expects no arguments"
 
-openSetDotfilesPrompt() {
-	clear
-	read -p 'Provide path to dotfiles directory: ~/' DOTFILES_PATH
-	DOTFILES=~/${DOTFILES_PATH}
-}
-
-toggleVerboseMode() {
-	if [[ "$VERBOSE_MODE" = 'false' ]]; then
-		VERBOSE_MODE='true'
-	else
-		VERBOSE_MODE='false'
-	fi
+	printManual | "$PAGER"
 }
 
 openMainMenu() {
-	local readonly MENU="
+	[[ $# -ne 0 ]] && throwInternalErr "openMainMenu() expects no arguments"
+
+	local -r menu="
     ##################################################
     #                   MAIN MENU                    #
     ##################################################
@@ -493,83 +581,123 @@ openMainMenu() {
 
     - 'h' open manual
     - 'o' view/edit options
-    - 'i' view installed configs
-    - 'p' pick configs to install
-    - '*' install EVERYTHING
+    - 'v' view installed configs
+    - 'i' install configs
+    - '*' install EVERYTHING (asks for consent)
   "
 
 	while true; do
-		printMenu "$MENU"
-		local readonly OPTION=$(askToPickOption)
+		printMenu "$menu"
+		local option=$(askToPickOption)
 		clear
 
-		case "$OPTION" in
+		case "$option" in
 		'q') exit 0 ;;
 		'h') openManual ;;
 		'o') openOptionsMenu ;;
-		'i') viewInstalledConfigs ;;
-		'p') openInstallConfigsMenu ;;
+		'v') viewInstalledConfigs ;;
+		'i') openInstallConfigsMenu ;;
 		'*') installEverything ;;
-		*) echo "Invalid option: '${OPTION}'" && askToProceed ;;
+		*) echo "Invalid option: '${option}'" && askToProceed ;;
 		esac
 	done
 }
 
 openOptionsMenu() {
+	[[ $# -ne 0 ]] && throwInternalErr "openOptionsMenu() expects no arguments"
+
 	while true; do
-		local readonly MENU="
+		local menu="
       ##################################################
       #                    OPTIONS                     #
       ##################################################
-      VERBOSE_MODE=${VERBOSE_MODE}
       DOTFILES=${DOTFILES}
+      ROOT_CMD=${ROOT_CMD}
+      VERBOSE_MODE=${VERBOSE_MODE}
 
       - 'u' go back to main menu
 
       - 'd' set DOTFILES path
+      - 'r' set ROOT_CMD (used for gaining root privileges)
       - 'v' toggle VERBOSE_MODE (increases output)
     "
 
-		printMenu "$MENU"
-		local readonly OPTION=$(askToPickOption)
+		printMenu "$menu"
+		local option=$(askToPickOption)
 		clear
 
-		case "$OPTION" in
+		case "$option" in
 		'u') return 0 ;;
 		'd') openSetDotfilesPrompt ;;
+		'r') openSetRootCmdPromp ;;
 		'v') toggleVerboseMode ;;
-		*) echo "Invalid option: '${OPTION}'" && askToProceed ;;
+		*) echo "Invalid option: '${option}'" && askToProceed ;;
 		esac
 	done
 }
 
+openSetDotfilesPrompt() {
+	[[ $# -ne 0 ]] && throwInternalErr "openSetDotfilesPrompt() expects no arguments"
+
+	clear
+	local dotfiles_path
+	read -p "Provide path to dotfiles directory: ~/" dotfiles_path
+	readonly dotfiles_path
+
+	DOTFILES="${HOME}/${dotfiles_path}"
+}
+
+openSetRootCmdPromp() {
+	[[ $# -ne 0 ]] && throwInternalErr "openSetRootCmdPromp() expects no arguments"
+
+	clear
+	read -p "Provide command for gaining root privileges: " ROOT_CMD
+	if ! isCmdAvailable "$ROOT_CMD"; then
+		logWarning "provided command is not available on the system"
+		askToProceed
+	fi
+}
+
+toggleVerboseMode() {
+	[[ $# -ne 0 ]] && throwInternalErr "toggleVerboseMode() expects no arguments"
+
+	if [[ $VERBOSE_MODE -eq $FALSE ]]; then
+		VERBOSE_MODE=$TRUE
+	else
+		VERBOSE_MODE=$FALSE
+	fi
+}
+
 viewInstalledConfigs() {
-	local readonly MENU="
+	[[ $# -ne 0 ]] && throwInternalErr "viewInstalledConfigs() expects no arguments"
+
+	local menu="
     ##################################################
     #               INSTALLED CONFIGS                #
     ##################################################
     # list of successfully installed configs during this session"
 
-	[[ "${#INSTALLED_CONFIGS[@]}" -ge 1 ]] && MENU+="\n"
+	[[ ${#INSTALLED_CONFIGS[@]} -ge 1 ]] && menu+="\n"
 
-	for CONFIG in "${INSTALLED_CONFIGS[@]}"; do
-		MENU+="\n- $CONFIG"
+	for config in "${INSTALLED_CONFIGS[@]}"; do
+		menu+="\n- $config"
 	done
 
-	printMenu "$MENU"
+	printMenu "$menu"
 	askToProceed
 }
 
 openInstallConfigsMenu() {
-	local readonly MENU="
+	[[ $# -ne 0 ]] && throwInternalErr "openInstallConfigsMenu() expects no arguments"
+
+	local -r menu="
     ##################################################
     #                INSTALL CONFIGS                 #
     ##################################################
     # pick symbol/name corresponding to desired option/config
 
-    - 'q' quit/exit
     - 'u' go back to main menu
-    - 'i' view installed configs
+    - 'v' view installed configs
 
     - '1' alacritty
     - '2' awesome
@@ -582,19 +710,17 @@ openInstallConfigsMenu() {
     - '9' picom
     - '10' tmux
     - '11' xorg
-    - '12' 10-keyboard.conf (xorg polish character support) ~ ROOT
-    - '13' zsh
+    - '12' zsh
   "
 
 	while true; do
-		printMenu "$MENU"
-		local readonly OPTION=$(askToPickOption)
+		printMenu "$menu"
+		local option=$(askToPickOption)
 		clear
 
-		case "$OPTION" in
-		'q') exit 0 ;;
+		case "$option" in
 		'u') return 0 ;;
-		'i')
+		'v')
 			viewInstalledConfigs
 			continue
 			;;
@@ -603,47 +729,139 @@ openInstallConfigsMenu() {
 		'3' | 'clang-format') installClangFormat ;;
 		'4' | 'fonts') installFonts ;;
 		'5' | 'git') installGit ;;
-		'6' | 'grub') installGRUB ;;
+		'6' | 'grub') installGrub ;;
 		'7' | 'nvim') installNvim ;;
 		'8' | 'pacman') installPacman ;;
 		'9' | 'picom') installPicom ;;
 		'10' | 'tmux') installTmux ;;
 		'11' | 'xorg') installXorg ;;
-		'12' | '10-keyboard.conf') installXorgPolishCharacterSupport ;;
-		'13' | 'zsh') installZsh ;;
-		*) echo "Invalid option: '${OPTION}'" ;;
+		'12' | 'zsh') installZsh ;;
+		*) echo "Invalid option: '${option}'" ;;
 		esac
 
 		askToProceed
 	done
 }
 
+startTUI() {
+	[[ $# -ne 0 ]] && throwInternalErr "startTUI() expects no arguments"
+
+	openMainMenu
+	exit 0
+}
+
 ##################################################
-#              MAIN EXECUTION BLOCK              #
+#                 CLI FUNCTIONS                  #
 ##################################################
 
-# check if 'sudo' is available on the system
-if ! command -v sudo 1>/dev/null; then
-	clear
-	echo "[WARNING] - 'sudo' is not available on the system"
-	echo "[WARNING] - $SCRIPT_NAME won't be able to install configs requiring root permissions (denoted with: '~ ROOT' in the 'INSTALL CONFIGS' menu)"
-	askToProceed
-fi
+# @args config arguments passed to the script
+ensureValidityOfConfigArgs() {
+	[[ $# -eq 0 ]] && throwInternalErr "ensureValidityOfConfigArgs() expects config arguments"
+
+	local are_all_config_args_valid=$TRUE
+	local config_arg
+	local config
+
+	for config_arg in "$@"; do
+		local is_valid=$FALSE
+
+		for config in "${CONFIGS[@]}"; do
+			if [[ "$config_arg" = "$config" ]]; then
+				is_valid=$TRUE
+				break
+			fi
+		done
+
+		if [[ $is_valid -eq $FALSE ]]; then
+			are_all_config_args_valid=$FALSE
+			echo "Invalid config argument: '${config_arg}'"
+		fi
+	done
+
+	[[ $are_all_config_args_valid -eq $FALSE ]] && exit $INVALID_ARG_ERROR_CODE
+}
+
+# @args config arguments passed to the script
+processConfigArgs() {
+	[[ $# -eq 0 ]] && throwInternalErr "processConfigArgs() expects config arguments"
+
+	local config_arg
+
+	for config_arg in "$@"; do
+		install${config_arg^} && echo
+
+		if [[ $? -ne 0 ]]; then
+			logErr "$config installation failed"
+			break
+		fi
+	done
+}
+
+# @args config arguments passed to the script
+startCLI() {
+	[[ $# -eq 0 ]] && throwInternalErr "startCLI() expects config arguments"
+
+	ensureValidityOfConfigArgs "$@"
+	processConfigArgs "$@"
+
+	echo "Successfully installed configs: $INSTALLED_CONFIGS"
+}
+
+##################################################
+#             EXECUTION ENTRY POINT              #
+##################################################
 
 # handle flags
-while getopts ':hvd:' OPTION; do
-	case "$OPTION" in
+while getopts ':hvd:r:' FLAG; do
+	case "$FLAG" in
 	h) printManual && exit 0 ;;
-	v) VERBOSE_MODE='true' ;;
+	v) VERBOSE_MODE=$TRUE ;;
 	d) DOTFILES="$OPTARG" ;;
-	:) throwErr "flag '-${OPTARG}' requires argument" 1 ;;
-	?) throwErr 'user supplied invalid option' 2 ;;
+	r) ROOT_CMD="$OPTARG" ;;
+	:) throwErr "flag '-${OPTARG}' requires argument" $MISSING_ARG_ERROR_CODE ;;
+	?) throwErr "invalid flag '-${OPTARG}' supplied" $INVALID_FLAG_ERROR_CODE ;;
 	esac
 done
 
-# remove flags, leaving only arguments
+# remove flags, leaving script arguments
 shift $((OPTIND - 1))
 
-openMainMenu
+# check if too many arguments were supplied
+[[ $# -gt $MAX_ARG_COUNT ]] &&
+	throwErr "too many arguments supplied (max number: ${MAX_ARG_COUNT})" $TOO_MANY_ARGS_ERROR_CODE
+
+# determine EXECUTION_MODE
+if [[ $# -eq 0 ]]; then
+	readonly EXECUTION_MODE='TUI'
+else
+	readonly EXECUTION_MODE='CLI'
+fi
+
+# check if ROOT_CMD is available and handle the case when it's not
+if ! isCmdAvailable "$ROOT_CMD"; then
+	[[ "$EXECUTION_MODE" = 'TUI' ]] && clear
+
+	logWarning "ROOT_CMD: '${ROOT_CMD}' is not available on the system"
+	logWarning "$SCRIPT_NAME won't be able to install configs requiring root permissions (denoted with '[ROOT]' or '~ ROOT')"
+
+	[[ "$EXECUTION_MODE" = 'TUI' ]] && logWarning "you can change ROOT_CMD in the 'OPTIONS' menu" && askToProceed
+
+	if [[ "$EXECUTION_MODE" = 'CLI' ]]; then
+		read -p "Provide alternate command for gaining root privileges: " ROOT_CMD
+
+		if ! isCmdAvailable "$ROOT_CMD"; then
+			logWarning "provided command '$ROOT_CMD' is not available on the system"
+
+			askBooleanQuestion "Do you want to proceed anyway?"
+			[[ $? -eq $FALSE ]] && exit 0
+		fi
+
+		echo
+	fi
+fi
+
+# run the damn thing!
+[[ "$EXECUTION_MODE" = 'TUI' ]] && startTUI
+[[ "$EXECUTION_MODE" = 'CLI' ]] && startCLI "$@"
 
 exit 0
