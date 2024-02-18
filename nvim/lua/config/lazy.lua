@@ -12,7 +12,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-vim.g.mapleader = " " -- setting leader key before lazy setup, so that my mappings in plugin configs work correctly
+vim.g.mapleader = " " -- setting leader key before lazy setup, so that mappings in plugin configs work correctly
 
 require("lazy").setup("plugins", {
 	change_detection = {
