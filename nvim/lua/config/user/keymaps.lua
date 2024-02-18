@@ -17,37 +17,41 @@ local opts = { noremap = true, silent = true }
 --------------------------------------------------
 --                   DISABLE                    --
 --------------------------------------------------
+-- most of these are disabled cause I typed them on accident...
 
--- disable 'K' (keyword lookup)
+-- performs keyword lookup
 map("n", "K", "<Nop>", opts)
 
--- disable '<C-z>' (shell shortcut for suspending current process)
+-- shell shortcut for suspending current process
 map({ "n", "i", "v" }, "<C-z>", "<Nop>", opts)
 
--- disable '<space>' (it's my leader key, hence I don't want it to move my cursor)
-map("n", "<space>", "<Nop>", opts)
+-- prevent leader key from moving my cursor
+map("n", vim.g.mapleader, "<Nop>", opts)
 
--- disable '<leader>x' (I'm using it to execute buffers)
-map("n", "<leader>x", "<Nop>", opts)
-
--- disable '<C-j>' (I was typing it by accident)
+-- works like 'Enter' key
 map("i", "<C-j>", "<Nop>", opts)
 
--- disable 'J' (joins current line with the next one)
+-- joins current line with the next one
 map("n", "J", "<Nop>", opts)
 
+-- this one's used in the 'RUN/EVAL' section
+map("n", "<leader>r", "<Nop>", opts)
+
 --------------------------------------------------
---                   EXECUTE                    --
+--                   RUN/EVAL                   --
 --------------------------------------------------
 
--- execute currently open buffer with node
-map("n", "<leader>xj", "<Cmd>write | !node %<CR>", opts)
+-- evaluate current buffer with node
+map("n", "<leader>rj", "<Cmd>write | !node %<CR>", opts)
 
--- execute currently open buffer with shell
-map("n", "<leader>xs", "<Cmd>write | !%<CR>", opts)
+-- evaluate current buffer with shell
+map("n", "<leader>rs", "<Cmd>write | !./%<CR>", opts)
 
--- execute/source currently open buffer with vim
-map("n", "<leader>xv", "<Cmd>source %<CR>", opts)
+-- source current buffer
+map("n", "<leader>rv", "<Cmd>source %<CR>", opts)
+
+-- run make
+map("n", "<leader>rm", "<Cmd>make<CR>", opts)
 
 --------------------------------------------------
 --                BUFFER RELATED                --
