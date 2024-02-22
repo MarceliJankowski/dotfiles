@@ -8,10 +8,8 @@ export readonly DOTFILES="${HOME}/dotfiles"
 export readonly NOTES="${HOME}/notes"
 export readonly PRETTIERD_DEFAULT_CONFIG="${DOTFILES}/prettier/prettierrc.yaml"
 
-# variables used in my shell scripts
+# shell script variables
 export readonly SHELL_SCRIPTS_PATH="${HOME}/shellScripts/scripts"
-export readonly REMOTE_GIT_URL='https://github.com'
-export readonly REMOTE_GIT_USERNAME='MarceliJankowski'
 export readonly BROWSER='firefox'
 
  # path to cargo binaries
