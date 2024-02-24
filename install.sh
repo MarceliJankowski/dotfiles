@@ -505,7 +505,8 @@ installZsh() {
 	symlink zsh/zshrc ~/.zshrc &&
 		createDirIfItDoesntExist $zsh_configs_dir &&
 		symlink zsh/aliases.zsh ${zsh_configs_dir}/aliases.zsh &&
-		symlink zsh/exports.zsh ${zsh_configs_dir}/exports.zsh
+		symlink zsh/exports.zsh ${zsh_configs_dir}/exports.zsh &&
+		symlink zsh/functions.zsh ${zsh_configs_dir}/functions.zsh
 
 	[[ $? -ne 0 ]] && return 1
 
