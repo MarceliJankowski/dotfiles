@@ -26,6 +26,10 @@ alias vim='nvim'
 # get rid of GDB startup text
 alias gdb='gdb --quiet'
 
+# functions.zsh
+alias fdirv='fdir && $EDITOR .'
+alias rfdirv='rfdir && $EDITOR .'
+
 # other
 alias dotfiles='$EDITOR $DOTFILES'
 alias notes='$EDITOR $NOTES'
