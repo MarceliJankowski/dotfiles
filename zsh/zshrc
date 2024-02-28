@@ -42,7 +42,15 @@ source "${HOME}/.config/zsh/exports.zsh"
 source "${HOME}/.config/zsh/functions.zsh"
 
 # enable <C-Backspace> keymap
-bindkey "^H" backward-kill-word
+bindkey '^h' backward-kill-word
+
+# functions.zsh keymaps
+bindkey -s '^f^d' 'fdir^M'
+bindkey -s '^f^r^d' 'rfdir^M'
+bindkey -s '^f^v' 'fdirv^M'
+bindkey -s '^f^r^v' 'rfdirv^M'
+bindkey -s '^f^f' 'ffilev^M'
+bindkey -s '^f^r^f' 'rffilev^M'
 
 # increase keyboard repeat rate (start repeating key press after 300 milliseconds, and then repeat it 50 times a second)
 xset r rate 300 50
