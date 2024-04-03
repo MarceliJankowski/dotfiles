@@ -12,10 +12,11 @@
 	cane = commit --amend --no-edit # Commit Amend No Edit
   pushf = push --force-with-lease # push force (safer)
   bblame = blame -w -C -C -C # better blame
+  rdir = rev-parse --show-toplevel # root directory
   lc = !git log --oneline | head -n1 # last commit
   lci = !git log --oneline | head -n1 | cut -d ' ' -f 1 # last commit identifier
   cc = !git log --oneline | wc -l # commit count
-  showf = !git --no-pager show --name-only --pretty="" # show file names
+  showf = !git --no-pager show --name-only --pretty='' # show file names
 [core]
 	editor = $EDITOR
 [help]
