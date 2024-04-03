@@ -22,13 +22,12 @@ year() {
   date '+%Y'
 }
 
-# @desc find project root directory and cd into it (wrapper around findProjectRootDir script)
-# @args all arguments are forwarded to findProjectRootDir
+# @desc find project root directory and cd into it (project must be managed with Git)
 # @return 0 if all went well, 1 if root directory wasn't found
 rdir() {
   local root_dir
 
-  root_dir=$(findProjectRootDir "$@")
+  root_dir=$(git rev-parse --show-toplevel)
   [[ $? -ne 0 ]] && return 1
 
   cd "$root_dir"
