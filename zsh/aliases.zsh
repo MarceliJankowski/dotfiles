@@ -16,7 +16,7 @@ alias cp='cp -i'
 
 # curl doesn't postfix response with '\n' (newline) character by default, this causes ZSH to display it with '%' sign at the end
 # I'm "fixing" this annoying behaviour with the '-w' (write-out) flag
-alias curl='curl -w '\n''
+alias curl="curl -w '\n'"
 
 # nvim
 alias v='nvim'
