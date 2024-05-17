@@ -3,7 +3,7 @@ GRUB_DEFAULT=saved # GRUB will remember my latest choice and use it as the defau
 GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR="Arch"
 GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
-GRUB_CMDLINE_LINUX=""
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=115c1ab6-a020-4720-bca1-60d1a2a03629:root zswap.enabled=0 rootfstype=ext4"
 
 # Preload both GPT and MBR modules so that they are not missed
 GRUB_PRELOAD_MODULES="part_gpt part_msdos"
