@@ -14,9 +14,6 @@ picom &
 # bind capslock to escape
 setxkbmap -option "caps:escape"
 
-# start ibus-daemon
-ibus-daemon -dr
-
 # set 'awesome' as the default WM in case no arguments were passed to this script
 session=${1:-awesome}
 

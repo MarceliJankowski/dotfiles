@@ -265,9 +265,8 @@ awful.screen.connect_for_each_screen(function(s)
 
 			blankwidget,
 			brightness_widget({
-				program = "brightnessctl", -- program for getting brightness info
-				tooltip = true, -- display brigheness level on hover
-				timeout = 10, -- refresh rate
+				program = "brightnessctl", -- program for getting/setting brightness
+				timeout = 60, -- refresh rate (in seconds)
 				type = "icon_and_text",
 				font = "FiraCode NF",
 				percentage = true,
@@ -288,6 +287,7 @@ awful.screen.connect_for_each_screen(function(s)
 				shape = "octogon",
 				width = 50,
 				mute_color = "#850000",
+				card = 0,
 			}),
 			mytextclock,
 			logout_menu_widget(),
