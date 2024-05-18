@@ -416,10 +416,10 @@ installGrub() {
 	askBooleanQuestion "Would you like to regenerate 'grub.cfg' (otherwise GRUB config changes won't take effect)?"
 	if [[ $? -eq $TRUE ]]; then
 		local -r regenerate_cmd="$ROOT_CMD grub-mkconfig -o /boot/grub/grub.cfg"
-		regenerate_cmd
+		$regenerate_cmd
 
 		if [[ $? -ne 0 ]]; then
-			logErr "regenerating 'grub.cfg' failed (command: '${installGrubRegenerateCmd}')"
+			logErr "regenerating 'grub.cfg' failed (command: '${regenerate_cmd}')"
 			return 1
 		fi
 	fi
@@ -500,21 +500,6 @@ installZsh() {
 
 	echo "Installing: zsh config"
 
-	local -r zsh_configs_dir=~/.config/zsh
-
-	symlink zsh/zshrc ~/.zshrc &&
-		createDirIfItDoesntExist $zsh_configs_dir &&
-		symlink zsh/aliases.zsh ${zsh_configs_dir}/aliases.zsh &&
-		symlink zsh/exports.zsh ${zsh_configs_dir}/exports.zsh &&
-		symlink zsh/functions.zsh ${zsh_configs_dir}/functions.zsh
-
-	[[ $? -ne 0 ]] && return 1
-
-	askBooleanQuestion "Would you like to also symlink 'zprofile' (automatically starts Xorg session)?"
-	if [[ $? -eq $TRUE ]]; then
-		symlink zsh/zprofile ~/.zprofile || return 1
-	fi
-
 	# dependency installations are treated as independent events, failure of one won't prevent others from prompting/happening (but it will prevent adding 'zsh' to INSTALLED_CONFIGS array)
 	local is_installation_successful=$TRUE
 
@@ -537,6 +522,21 @@ installZsh() {
 	if [[ $? -eq $TRUE ]]; then
 		cloneGitRepo https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 		[[ $? -ne 0 ]] && is_installation_successful=$FALSE
+	fi
+
+	local -r zsh_configs_dir=~/.config/zsh
+
+	symlink zsh/zshrc ~/.zshrc &&
+		createDirIfItDoesntExist $zsh_configs_dir &&
+		symlink zsh/aliases.zsh ${zsh_configs_dir}/aliases.zsh &&
+		symlink zsh/exports.zsh ${zsh_configs_dir}/exports.zsh &&
+		symlink zsh/functions.zsh ${zsh_configs_dir}/functions.zsh
+
+	[[ $? -ne 0 ]] && return 1
+
+	askBooleanQuestion "Would you like to also symlink 'zprofile' (automatically starts Xorg session)?"
+	if [[ $? -eq $TRUE ]]; then
+		symlink zsh/zprofile ~/.zprofile || return 1
 	fi
 
 	[[ $is_installation_successful -eq $TRUE ]] && addInstalledConfig 'zsh'

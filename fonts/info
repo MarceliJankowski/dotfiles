@@ -1,5 +1,6 @@
 Info:
 I use 'Windows Compatible' nerd fonts because those were the only ones that worked out of the box for some reason.
+To get improved glyph support install something like 'noto-fonts'.
 
 Setup:
 $ mkdir -p ~/.local/share/fonts
