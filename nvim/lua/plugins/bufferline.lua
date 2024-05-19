@@ -1,6 +1,5 @@
 return {
 	"akinsho/bufferline.nvim", -- nice buffer line
-	version = "*",
 	dependencies = "nvim-tree/nvim-web-devicons",
 	config = function()
 		-- KEYMAPS
