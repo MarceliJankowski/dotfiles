@@ -37,6 +37,10 @@ map("n", "J", "<Nop>", opts)
 -- this one's used in the 'RUN/EVAL' section
 map("n", "<leader>r", "<Nop>", opts)
 
+-- these ones introduce delay to <C-w> (close current buffer) keymap
+vim.api.nvim_del_keymap("n", "<C-w>d")
+vim.api.nvim_del_keymap("n", "<C-w><C-d>")
+
 --------------------------------------------------
 --                   RUN/EVAL                   --
 --------------------------------------------------
