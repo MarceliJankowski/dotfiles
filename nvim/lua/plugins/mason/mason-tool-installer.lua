@@ -10,9 +10,11 @@ return {
 			"php-cs-fixer",
 			"clang-format",
 			"latexindent",
+			"black",
 
 			-- linters
 			"phpstan",
+			"ruff",
 		},
 	},
 }

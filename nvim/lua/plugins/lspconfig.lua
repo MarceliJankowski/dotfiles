@@ -39,6 +39,7 @@ return {
 		lspconfig.yamlls.setup({})
 		lspconfig.phpactor.setup({})
 		lspconfig.clangd.setup({})
+		lspconfig.pylsp.setup({})
 
 		lspconfig.emmet_ls.setup({
 			filetypes = {
