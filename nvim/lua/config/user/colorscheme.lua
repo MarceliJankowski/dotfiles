@@ -11,3 +11,7 @@ vim.cmd("highlight RainbowDelimiterPurple guifg=#b98bf5")
 vim.cmd("highlight RainbowDelimiterBlue guifg=#4aacfb")
 vim.cmd("highlight RainbowDelimiterCyan guifg=#18eece")
 vim.cmd("highlight RainbowDelimiterGray guifg=#dad8d8")
+
+-- set floating window colors
+vim.cmd("highlight FloatBorder guibg=#1f2233")
+vim.cmd("highlight NormalFloat guibg=#1f2233")
