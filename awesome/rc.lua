@@ -17,7 +17,6 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 local battery_widget = require("awesome-wm-widgets.battery-widget.battery")
 local brightness_widget = require("awesome-wm-widgets.brightness-widget.brightness")
 local logout_menu_widget = require("awesome-wm-widgets.logout-menu-widget.logout-menu")
-local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 
 -- Enable hotkeys help widget for VIM and other apps when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -264,30 +263,20 @@ awful.screen.connect_for_each_screen(function(s)
 			layout = wibox.layout.fixed.horizontal,
 
 			blankwidget,
+			wibox.widget.systray(), -- systray widget is the nm-applet in this setup
+			blankwidget,
 			brightness_widget({
 				program = "brightnessctl", -- program for getting/setting brightness
-				timeout = 60, -- refresh rate (in seconds)
+				timeout = 1, -- refresh rate (in seconds)
 				type = "icon_and_text",
 				font = "FiraCode NF",
 				percentage = true,
 			}),
 			blankwidget,
-			wibox.widget.systray(), -- systray widget is the nm-applet in this setup
-			blankwidget,
 			battery_widget({
 				display_notification = true, -- display info popup on hover
 				show_current_level = true,
 				font = "FiraCode NF",
-			}),
-			blankwidget,
-			volume_widget({
-				device = "default",
-				widget_type = "horizontal_bar",
-				with_icon = true,
-				shape = "octogon",
-				width = 50,
-				mute_color = "#850000",
-				card = 0,
 			}),
 			mytextclock,
 			logout_menu_widget(),
@@ -321,15 +310,15 @@ globalkeys = gears.table.join(
 
 	-- volume control:
 	awful.key({ modkey }, "]", function()
-		volume_widget:inc(5)
+		awful.spawn.with_shell("pactl -- set-sink-volume @DEFAULT_SINK@ +5%")
 	end, { description = "increase volume", group = "volume" }),
 
 	awful.key({ modkey }, "[", function()
-		volume_widget:dec(5)
+		awful.spawn.with_shell("pactl -- set-sink-volume @DEFAULT_SINK@ -5%")
 	end, { description = "decrease volume", group = "volume" }),
 
 	awful.key({ modkey }, "\\", function()
-		volume_widget:toggle()
+		awful.spawn.with_shell("pactl -- set-sink-mute @DEFAULT_SINK@ toggle")
 	end, { description = "toggle volume mute", group = "volume" }),
 
 	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
