@@ -1,6 +1,6 @@
 return {
 	"nvim-telescope/telescope.nvim", -- fuzzy finder
-	tag = "0.1.5",
+	tag = "0.1.6",
 	dependencies = {
 		"nvim-lua/plenary.nvim", -- collection of nvim lua functions
 		"nvim-telescope/telescope-media-files.nvim", -- extension for viewing media files
@@ -17,13 +17,13 @@ return {
 				layout_config = {
 					width = 0.92,
 					height = 0.92,
-					preview_width = 55,
+					preview_width = function(_, columns)
+						return math.floor(columns * 0.55) -- 55% of available columns / window width
+					end,
 				},
 			},
 			extensions = {
 				media_files = {
-					-- filetypes whitelist
-					-- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
 					filetypes = { "png", "webp", "jpg", "jpeg" },
 					find_cmd = "rg", -- defaults to `fd` (ripgrep is faster)
 				},
