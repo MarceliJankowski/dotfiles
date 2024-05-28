@@ -197,7 +197,7 @@ awful.screen.connect_for_each_screen(function(s)
 	local l = awful.layout.suit -- less typing
 
 	-- tag names / icons
-	local names = { "  ", "  ", "  ", "  ", "  ", " 6 ", " 7 ", " 8 ", " 9 " }
+	local names = { "  ", " 󰈹 ", " 󰒓 ", " 󰈔 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }
 
 	-- default layouts for tags
 	local layouts = { l.tile, l.tile, l.tile, l.tile, l.tile, l.tile, l.tile, l.tile, l.tile }
@@ -269,14 +269,14 @@ awful.screen.connect_for_each_screen(function(s)
 				program = "brightnessctl", -- program for getting/setting brightness
 				timeout = 1, -- refresh rate (in seconds)
 				type = "icon_and_text",
-				font = "FiraCode NF",
+				font = "FiraCode Nerd Font Mono",
 				percentage = true,
 			}),
 			blankwidget,
 			battery_widget({
 				display_notification = true, -- display info popup on hover
 				show_current_level = true,
-				font = "FiraCode NF",
+				font = "FiraCode Nerd Font Mono",
 			}),
 			mytextclock,
 			logout_menu_widget(),
