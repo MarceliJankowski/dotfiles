@@ -343,10 +343,10 @@ globalkeys = gears.table.join(
 	awful.key({ modkey, "Shift" }, "k", function()
 		awful.client.swap.byidx(-1)
 	end, { description = "swap with previous client by index", group = "client" }),
-	awful.key({ modkey, "Control" }, "k", function()
+	awful.key({ modkey }, ".", function()
 		awful.screen.focus_relative(1)
 	end, { description = "focus the next screen", group = "screen" }),
-	awful.key({ modkey, "Control" }, "j", function()
+	awful.key({ modkey }, ",", function()
 		awful.screen.focus_relative(-1)
 	end, { description = "focus the previous screen", group = "screen" }),
 	awful.key({ modkey }, "u", awful.client.urgent.jumpto, { description = "jump to urgent client", group = "client" }),
@@ -358,7 +358,7 @@ globalkeys = gears.table.join(
 	end, { description = "go back", group = "client" }),
 
 	-- Standard program
-	awful.key({ modkey }, "Return", function()
+	awful.key({ modkey }, "t", function()
 		awful.spawn(terminal)
 	end, { description = "open terminal", group = "launcher" }),
 	awful.key({ modkey }, "b", function()
@@ -385,12 +385,12 @@ globalkeys = gears.table.join(
 	awful.key({ modkey, "Control" }, "l", function()
 		awful.tag.incncol(-1, nil, true)
 	end, { description = "decrease the number of columns", group = "layout" }),
-	awful.key({ modkey }, "space", function()
+	awful.key({ modkey }, "o", function()
 		awful.layout.inc(1)
-	end, { description = "select next", group = "layout" }),
-	awful.key({ modkey, "Shift" }, "space", function()
+	end, { description = "select next layout", group = "layout" }),
+	awful.key({ modkey, "Shift" }, "o", function()
 		awful.layout.inc(-1)
-	end, { description = "select previous", group = "layout" }),
+	end, { description = "select previous layout", group = "layout" }),
 
 	awful.key({ modkey, "Control" }, "n", function()
 		local c = awful.client.restore()
@@ -425,27 +425,27 @@ clientkeys = gears.table.join(
 		c.fullscreen = not c.fullscreen
 		c:raise()
 	end, { description = "toggle fullscreen", group = "client" }),
-	awful.key({ modkey }, "q", function(c)
+	awful.key({ modkey }, "e", function(c)
 		c:kill()
-	end, { description = "close", group = "client" }),
+	end, { description = "kill window", group = "client" }),
 	awful.key(
-		{ modkey, "Control" },
-		"space",
+		{ modkey, "Shift" },
+		"f",
 		awful.client.floating.toggle,
 		{ description = "toggle floating", group = "client" }
 	),
-	awful.key({ modkey, "Shift" }, "Return", function(c)
+	awful.key({ modkey }, "Return", function(c)
 		c:swap(awful.client.getmaster())
 	end, { description = "move to master", group = "client" }),
-	awful.key({ modkey }, "o", function(c)
+	awful.key({ modkey, "Shift" }, ".", function(c)
 		c:move_to_screen()
 	end, { description = "move to screen", group = "client" }),
-	awful.key({ modkey, "Shift" }, "o", function(c)
+	awful.key({ modkey, "Shift" }, ",", function(c)
 		c:move_to_screen(c.screen.index - 1)
 	end, { description = "move to previous screen", group = "client" }),
-	awful.key({ modkey }, "t", function(c)
+	awful.key({ modkey }, "v", function(c)
 		c.ontop = not c.ontop
-	end, { description = "toggle keep on top", group = "client" }),
+	end, { description = "toggle keep on top (always keep visible)", group = "client" }),
 	awful.key({ modkey }, "n", function(c)
 		-- The client currently has the input focus, so it cannot be minimized, since minimized clients can't have the focus.
 		c.minimized = true
