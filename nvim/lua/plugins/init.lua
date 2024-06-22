@@ -30,7 +30,7 @@ return {
 	{ "kaicataldo/material.vim", branch = "main", priority = 1000, lazy = false }, -- color scheme
 
 	--------------------------------------------------
-	--              MOTION RELATED                  --
+	--                MOTION RELATED                --
 	--------------------------------------------------
 
 	"wellle/targets.vim", -- adds various text objects
@@ -52,7 +52,7 @@ return {
 	},
 
 	--------------------------------------------------
-	--             SYNTAX HIGHLIGHTING              --
+	--                LANGUAGE TOOLS                --
 	--------------------------------------------------
 
 	"leafgarland/typescript-vim", -- TS syntax highlighting
@@ -60,4 +60,9 @@ return {
 	"maxmellon/vim-jsx-pretty", -- JSX highlighting
 
 	"yuezk/vim-js", -- recommended by vim-jsx-pretty
+
+	{
+		"mrcjkb/rustaceanvim", -- rust development tools
+		lazy = false, -- this plugin is already lazy
+	},
 }
