@@ -3,16 +3,12 @@ return {
 	dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
 	opts = {
 		ensure_installed = {
-			-- formatters
 			"stylua",
 			"prettierd",
 			"shfmt",
 			"php-cs-fixer",
 			"clang-format",
 			"latexindent",
-			"black",
-
-			-- linters
 			"phpstan",
 			"ruff",
 		},
