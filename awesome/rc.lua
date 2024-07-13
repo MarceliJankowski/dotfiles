@@ -655,8 +655,11 @@ end)
 
 -- Autostart applications
 
--- spawn the nm-applet (network-manager-applet package)
+-- network-manager-applet package
 awful.spawn.with_shell("nm-applet")
+
+-- blueman package (applet for bluetooth management)
+awful.spawn.with_shell("blueman-applet")
 
 -- restore wallpaper
 awful.spawn.with_shell("nitrogen --restore")
