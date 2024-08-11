@@ -1,0 +1,2 @@
+Setup:
+$ ln -s ${DOTFILES}/formatters/stylua/stylua.toml ~/.stylua.toml

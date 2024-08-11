@@ -383,7 +383,7 @@ installClangFormat() {
 
   echo "Installing: clang-format config"
 
-  symlink 'clang-format/clang-format.yml' "${HOME}/.clang-format" &&
+  symlink 'formatters/clang-format/clang-format.yml' "${HOME}/.clang-format" &&
     addInstalledConfig 'clang-format'
 }
 
@@ -463,7 +463,7 @@ installPicom() {
 installPrettier() {
   [[ $# -ne 0 ]] && internalError "installPrettier() expects no arguments"
 
-  local -r prettier_info="${DOTFILES}/prettier/info"
+  local -r prettier_info="${DOTFILES}/formatters/prettier/info"
   [[ ! -f "$prettier_info" ]] && internalError "prettier_info '${prettier_info}' is not a file"
 
   echo "Installing: prettier config"
@@ -475,7 +475,7 @@ installStylua() {
 
   echo "Installing: stylua config"
 
-  symlink 'stylua/stylua.toml' "${HOME}/.stylua.toml" &&
+  symlink 'formatters/stylua/stylua.toml' "${HOME}/.stylua.toml" &&
     addInstalledConfig 'stylua'
 }
 

@@ -1,2 +1,0 @@
-Setup:
-$ ln -s ${DOTFILES}/stylua/stylua.toml ~/.stylua.toml
