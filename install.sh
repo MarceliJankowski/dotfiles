@@ -94,13 +94,6 @@ EXIT CODES
 #               UTILITY FUNCTIONS                #
 ##################################################
 
-# @desc print MANUAL variable
-printManual() {
-  [[ $# -ne 0 ]] && internalError "printManual() expects no arguments"
-
-  echo "$MANUAL" | sed -e '1d' -e '$d'
-}
-
 # @desc log internal error `message` to stderr and exit with INTERNAL_ERROR_CODE
 internalError() {
   local message="$1"
@@ -146,6 +139,13 @@ logIfVerbose() {
   local -r message="$1"
 
   [[ $VERBOSE_MODE -eq $TRUE ]] && echo -e "[VERBOSE] - $message"
+}
+
+# @desc print MANUAL variable
+printManual() {
+  [[ $# -ne 0 ]] && internalError "printManual() expects no arguments"
+
+  echo "$MANUAL" | sed -e '1d' -e '$d'
 }
 
 # @desc add `config` to INSTALLED_CONFIGS array if it's absent (treats INSTALLED_CONFIGS array like a set DS)
