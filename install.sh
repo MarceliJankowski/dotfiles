@@ -68,7 +68,7 @@ OPTIONS
           Turn on VERBOSE_MODE (increases output).
 
       -d path
-          Set path to dotfiles directory / Update DOTFILES variable with 'path'.
+          Set path to dotfiles directory (sets DOTFILES variable).
 
       -r cmd
           Set command for obtaining root privileges (defaults to '${ROOT_CMD}').
@@ -94,63 +94,63 @@ EXIT CODES
 #               UTILITY FUNCTIONS                #
 ##################################################
 
-# @desc print global MANUAL variable
+# @desc print MANUAL variable
 printManual() {
-  [[ $# -ne 0 ]] && throwInternalErr "printManual() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "printManual() expects no arguments"
 
   echo "$MANUAL" | sed -e '1d' -e '$d'
 }
 
-# @desc log `message` to stderr and exit with INTERNAL_ERROR_CODE
-throwInternalErr() {
+# @desc log internal error `message` to stderr and exit with INTERNAL_ERROR_CODE
+internalError() {
   local message="$1"
 
-  [[ $# -ne 1 ]] && message="throwInternalErr() expects 'message' argument"
+  [[ $# -ne 1 ]] && message="internalError() expects 'message' argument"
 
   echo -e "[INTERNAL_ERROR] - $message" 1>&2
 
   exit $INTERNAL_ERROR_CODE
 }
 
-# @desc log `message` to stderr
-logErr() {
-  [[ $# -ne 1 ]] && throwInternalErr "logErr() expects 'message' argument"
-
-  local -r message="$1"
-  echo -e "[ERROR] - $message" 1>&2
-}
-
 # @desc log warning `message` to stdout
 logWarning() {
-  [[ $# -ne 1 ]] && throwInternalErr "logWarning() expects 'message' argument"
+  [[ $# -ne 1 ]] && internalError "logWarning() expects 'message' argument"
 
   local -r message="$1"
   echo -e "[WARNING] - $message"
 }
 
-# @desc log `message` to stderr and exit with `exit_code`
-throwErr() {
-  [[ $# -ne 2 ]] && throwInternalErr "throwErr() expects 'message' and 'exit_code' arguments"
+# @desc log error `message` to stderr
+logError() {
+  [[ $# -ne 1 ]] && internalError "logError() expects 'message' argument"
+
+  local -r message="$1"
+  echo -e "[ERROR] - $message" 1>&2
+}
+
+# @desc log error `message` to stderr and exit with `exit_code`
+error() {
+  [[ $# -ne 2 ]] && internalError "error() expects 'message' and 'exit_code' arguments"
 
   local -r message="$1"
   local -r exit_code="$2"
 
-  logErr "$message"
+  logError "$message"
   exit $exit_code
 }
 
-# @desc log `message` to stdout if VERBOSE_MODE is on
+# @desc log verbose `message` to stdout if VERBOSE_MODE is on
 logIfVerbose() {
-  [[ $# -ne 1 ]] && throwInternalErr "logIfVerbose() expects 'message' argument"
+  [[ $# -ne 1 ]] && internalError "logIfVerbose() expects 'message' argument"
 
   local -r message="$1"
 
   [[ $VERBOSE_MODE -eq $TRUE ]] && echo -e "[VERBOSE] - $message"
 }
 
-# @desc treat INSTALLED_CONFIGS array like a set (only add `config` if it isn't already there)
+# @desc add `config` to INSTALLED_CONFIGS array if it's absent (treats INSTALLED_CONFIGS array like a set DS)
 addInstalledConfig() {
-  [[ $# -ne 1 ]] && throwInternalErr "addInstalledConfig() expects 'config' argument"
+  [[ $# -ne 1 ]] && internalError "addInstalledConfig() expects 'config' argument"
 
   local -r config="$1"
   local installed_config
@@ -167,7 +167,7 @@ addInstalledConfig() {
 # @desc check if `cmd` is available on the system
 # @return 0 if it's available, 1 otherwise
 isCmdAvailable() {
-  [[ $# -ne 1 ]] && throwInternalErr "isCmdAvailable() expects 'cmd' argument"
+  [[ $# -ne 1 ]] && internalError "isCmdAvailable() expects 'cmd' argument"
 
   local -r cmd="$1"
   command -v "$cmd" &>/dev/null || return 1 # unavailable
@@ -177,7 +177,7 @@ isCmdAvailable() {
 
 # @desc echo `input` string with trailing whitespace removed from both ends
 trim() {
-  [[ $# -ne 1 ]] && throwInternalErr "trim() expects 'input' argument"
+  [[ $# -ne 1 ]] && internalError "trim() expects 'input' argument"
 
   local -r input="$1"
   local -r trimmed_input=$(sed -e 's/^\s+//' -e 's/\s+$//' <<<"$input")
@@ -188,7 +188,7 @@ trim() {
 # @desc ask user `question` and process answer into boolean
 # @return TRUE if user agreed, FALSE otherwise
 askBooleanQuestion() {
-  [[ $# -ne 1 ]] && throwInternalErr "askBooleanQuestion() expects 'question' argument"
+  [[ $# -ne 1 ]] && internalError "askBooleanQuestion() expects 'question' argument"
 
   local -r question="$1"
 
@@ -208,7 +208,7 @@ askBooleanQuestion() {
 
 # @desc ask user to pick option and echo trimmed answer
 askToPickOption() {
-  [[ $# -ne 0 ]] && throwInternalErr "askToPickOption() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "askToPickOption() expects no arguments"
 
   local option
   read -p "option: " option
@@ -221,7 +221,7 @@ askToPickOption() {
 
 # @desc format and print `menu`
 printMenu() {
-  [[ $# -ne 1 ]] && throwInternalErr "printMenu() expects 'menu' argument"
+  [[ $# -ne 1 ]] && internalError "printMenu() expects 'menu' argument"
 
   local -r menu="$1"
 
@@ -231,7 +231,7 @@ printMenu() {
 
 # @desc prompt user before proceeding
 askToProceed() {
-  [[ $# -ne 0 ]] && throwInternalErr "askToProceed() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "askToProceed() expects no arguments"
 
   echo -e "\n-- press 'Enter' to proceed --"
   read
@@ -239,7 +239,7 @@ askToProceed() {
 
 # @desc clone git `repository` into `destination`
 cloneGitRepo() {
-  [[ $# -ne 2 ]] && throwInternalErr "cloneGitRepo() expects 'repository' and 'destination' arguments"
+  [[ $# -ne 2 ]] && internalError "cloneGitRepo() expects 'repository' and 'destination' arguments"
 
   local -r repo="$1"
   local -r destination="$2"
@@ -252,8 +252,8 @@ cloneGitRepo() {
   if [[ $? -eq 0 ]]; then
     echo "Successfully cloned '${repo}' into '${destination}'"
   else
-    logErr "failed to clone '${repo}' into '${destination}'"
-    logErr "$clone_git_repo_clone_log"
+    logError "failed to clone '${repo}' into '${destination}'"
+    logError "$clone_git_repo_clone_log"
     return 1
   fi
 }
@@ -261,19 +261,19 @@ cloneGitRepo() {
 # @desc create symbolic link pointing to DOTFILES/`target_path` located at `link_path`
 # optional 'root' argument can be passed to denote permission level required for symlink creation
 symlink() {
-  [[ $# -lt 2 || $# -gt 3 ]] && throwInternalErr "symlink() expects 'target_path', 'link_path' and optionally 'root' arguments"
+  [[ $# -lt 2 || $# -gt 3 ]] && internalError "symlink() expects 'target_path', 'link_path' and optionally 'root' arguments"
 
   local -r target_path="${DOTFILES}/${1}"
   local -r link_path="$2"
   local -r permissions="$3"
 
   if [[ ! -e "$target_path" ]]; then
-    logErr "symlinking failed: '${target_path}' doesn't exist!"
+    logError "symlinking failed: '${target_path}' doesn't exist!"
     return 1
   fi
 
   if [[ -e "$link_path" && ! -L "$link_path" ]]; then
-    logErr "symlinking failed: '$link_path' already exists and is not a symbolic link (manual intervention required)"
+    logError "symlinking failed: '$link_path' already exists and is not a symbolic link (manual intervention required)"
     return 1
   fi
 
@@ -301,7 +301,7 @@ symlink() {
   fi
 
   if [[ $? -ne 0 ]]; then
-    logErr "symlinking '${link_path}' to '${target_path}' has failed"
+    logError "symlinking '${link_path}' to '${target_path}' has failed"
     return 1
   fi
 
@@ -311,13 +311,13 @@ symlink() {
 # @desc check if `dir_path` exists and create it (and its parent directories) if it doesn't
 # optional 'root' argument can be passed to denote permission level required for directory creation
 createDirIfItDoesntExist() {
-  [[ $# -lt 1 || $# -gt 2 ]] && throwInternalErr "createDirIfItDoesntExist() expects 'dir_path' and optionally 'root' arguments"
+  [[ $# -lt 1 || $# -gt 2 ]] && internalError "createDirIfItDoesntExist() expects 'dir_path' and optionally 'root' arguments"
 
   local -r dir_path="$1"
   local -r permissions="$2"
 
   if [[ -e "$dir_path" && ! -d "$dir_path" ]]; then
-    logErr "'${dir_path}' already exists and is not a directory (this requires manual intervention)"
+    logError "'${dir_path}' already exists and is not a directory (this requires manual intervention)"
     return 1
   fi
 
@@ -331,7 +331,7 @@ createDirIfItDoesntExist() {
     fi
 
     if [[ $? -ne 0 ]]; then
-      logErr "creating '${dir_path}' directory failed"
+      logError "creating '${dir_path}' directory failed"
       return 1
     fi
 
@@ -344,74 +344,75 @@ createDirIfItDoesntExist() {
 ##################################################
 
 installAlacritty() {
-  [[ $# -ne 0 ]] && throwInternalErr "installAlacritty() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installAlacritty() expects no arguments"
 
   echo "Installing: alacritty config"
 
-  local -r alacritty_dir=~/.config/alacritty
+  local -r alacritty_dir="${HOME}/.config/alacritty"
 
   createDirIfItDoesntExist "$alacritty_dir" &&
-    symlink alacritty/alacritty.toml ${alacritty_dir}/alacritty.toml &&
+    symlink 'alacritty/alacritty.toml' "${alacritty_dir}/alacritty.toml" &&
     addInstalledConfig 'alacritty'
 }
 
 installAwesome() {
-  [[ $# -ne 0 ]] && throwInternalErr "installAwesome() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installAwesome() expects no arguments"
 
   echo "Installing: awesome config"
 
-  local -r awesome_wm_dir=~/.config/awesome
+  local -r awesome_wm_dir="${HOME}/.config/awesome"
 
   createDirIfItDoesntExist "$awesome_wm_dir" &&
-    symlink awesome/rc.lua ${awesome_wm_dir}/rc.lua &&
-    symlink awesome/theme.lua ${awesome_wm_dir}/theme.lua
+    symlink 'awesome/rc.lua' "${awesome_wm_dir}/rc.lua" &&
+    symlink 'awesome/theme.lua' "${awesome_wm_dir}/theme.lua"
 
   [[ $? -ne 0 ]] && return 1
 
   askBooleanQuestion "awesome WM config requires 'awesome-wm-widgets' plugin. Would you like to clone it?"
   if [[ $? -eq $TRUE ]]; then
-    cloneGitRepo https://github.com/streetturtle/awesome-wm-widgets ~/.config/awesome/awesome-wm-widgets || return 1
+    cloneGitRepo 'https://github.com/streetturtle/awesome-wm-widgets' "${HOME}/.config/awesome/awesome-wm-widgets" ||
+      return 1
   fi
 
   addInstalledConfig 'awesome'
 }
 
 installClangFormat() {
-  [[ $# -ne 0 ]] && throwInternalErr "installClangFormat() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installClangFormat() expects no arguments"
 
   echo "Installing: clang-format config"
 
-  symlink clang-format/clang-format.yml ~/.clang-format &&
+  symlink 'clang-format/clang-format.yml' "${HOME}/.clang-format" &&
     addInstalledConfig 'clang-format'
 }
 
 installFonts() {
-  [[ $# -ne 0 ]] && throwInternalErr "installFonts() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installFonts() expects no arguments"
 
   echo "Installing: fonts config"
 
-  local -r fonts_dir=~/.local/share/fonts
+  local -r fonts_dir="${HOME}/.local/share/fonts"
 
   createDirIfItDoesntExist "$fonts_dir" &&
-    symlink fonts/nerdFonts ${fonts_dir}/nerdFonts &&
+    symlink 'fonts/nerdFonts' "${fonts_dir}/nerdFonts" &&
     addInstalledConfig 'fonts'
 }
 
 installGit() {
-  [[ $# -ne 0 ]] && throwInternalErr "installGit() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installGit() expects no arguments"
 
   echo "Installing: git config"
 
-  symlink git/gitconfig ~/.gitconfig &&
+  symlink 'git/gitconfig' "${HOME}/.gitconfig" &&
     addInstalledConfig 'git'
 }
 
 installGrub() {
-  [[ $# -ne 0 ]] && throwInternalErr "installGrub() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installGrub() expects no arguments"
 
   echo "Installing: GRUB config"
 
-  symlink grub/grub /etc/default/grub 'root' || return 1
+  symlink 'grub/grub' '/etc/default/grub' 'root' || return 1
 
   askBooleanQuestion "Would you like to regenerate 'grub.cfg' (otherwise GRUB config changes won't take effect)?"
   if [[ $? -eq $TRUE ]]; then
@@ -419,7 +420,7 @@ installGrub() {
     $regenerate_cmd
 
     if [[ $? -ne 0 ]]; then
-      logErr "regenerating 'grub.cfg' failed (command: '${regenerate_cmd}')"
+      logError "regenerating 'grub.cfg' failed (command: '${regenerate_cmd}')"
       return 1
     fi
   fi
@@ -428,75 +429,63 @@ installGrub() {
 }
 
 installNvim() {
-  [[ $# -ne 0 ]] && throwInternalErr "installNvim() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installNvim() expects no arguments"
 
   echo "Installing: nvim config"
 
-  symlink nvim ~/.config/nvim &&
-    createDirIfItDoesntExist ~/notes && # my neovim config needs 'notes' directory
+  symlink 'nvim' "${HOME}/.config/nvim" &&
+    createDirIfItDoesntExist "${HOME}/notes" && # nvim config uses notes directory
     addInstalledConfig 'nvim'
 }
 
 installPacman() {
-  [[ $# -ne 0 ]] && throwInternalErr "installPacman() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installPacman() expects no arguments"
 
   echo "Installing: pacman config"
 
-  symlink pacman/pacman.conf /etc/pacman.conf 'root' &&
+  symlink 'pacman/pacman.conf' '/etc/pacman.conf' 'root' &&
     addInstalledConfig 'pacman'
 }
 
 installPicom() {
-  [[ $# -ne 0 ]] && throwInternalErr "installPicom() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installPicom() expects no arguments"
 
   echo "Installing: picom config"
 
-  local -r picom_dir=~/.config/picom
+  local -r picom_dir="${HOME}/.config/picom"
 
   createDirIfItDoesntExist "$picom_dir" &&
-    symlink picom/picom.conf ${picom_dir}/picom.conf &&
+    symlink 'picom/picom.conf' "${picom_dir}/picom.conf" &&
     addInstalledConfig 'picom'
 }
 
 installPrettier() {
-  [[ $# -ne 0 ]] && throwInternalErr "installPrettier() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installPrettier() expects no arguments"
+
+  local -r prettier_info="${DOTFILES}/prettier/info"
+  [[ ! -f "$prettier_info" ]] && internalError "prettier_info '${prettier_info}' is not a file"
 
   echo "Installing: prettier config"
-  echo "prettier doesn't require seperate installation (read 'prettier/info')"
+  echo "Prettier installation is tied to zsh; please refer to '${prettier_info}'"
 }
 
 installTmux() {
-  [[ $# -ne 0 ]] && throwInternalErr "installTmux() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installTmux() expects no arguments"
 
   echo "Installing: tmux config"
 
-  symlink tmux/tmux.conf ~/.tmux.conf || return 1
+  symlink 'tmux/tmux.conf' "${HOME}/.tmux.conf" || return 1
 
   askBooleanQuestion "tmux config requires 'tpm' plugin manager. Would you like to clone it?"
   if [[ $? -eq $TRUE ]]; then
-    cloneGitRepo https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm || return 1
+    cloneGitRepo 'https://github.com/tmux-plugins/tpm' "${HOME}/.tmux/plugins/tpm" || return 1
   fi
 
   addInstalledConfig 'tmux'
 }
 
-installXorg() {
-  [[ $# -ne 0 ]] && throwInternalErr "installXorg() expects no arguments"
-
-  echo "Installing: xorg config"
-
-  symlink xorg/xinitrc.sh ~/.xinitrc || return 1
-
-  askBooleanQuestion "[ROOT] - Would you like to also symlink '10-keyboard.conf' (enables Polish character support)?"
-  if [[ $? -eq $TRUE ]]; then
-    symlink xorg/10-keyboard.conf /usr/share/X11/xorg.conf.d/10-keyboard.conf 'root' || return 1
-  fi
-
-  addInstalledConfig 'xorg'
-}
-
 installZsh() {
-  [[ $# -ne 0 ]] && throwInternalErr "installZsh() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installZsh() expects no arguments"
 
   echo "Installing: zsh config"
 
@@ -505,52 +494,67 @@ installZsh() {
 
   askBooleanQuestion "zsh config requires 'oh-my-zsh' framework. Would you like to install it?"
   if [[ $? -eq $TRUE ]]; then
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    sh -c "$(curl -fsSL 'https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh')"
     if [[ $? -ne 0 ]]; then
-      logErr "'oh-my-zsh' installation failed"
+      logError "'oh-my-zsh' installation failed"
       is_installation_successful=$FALSE
     fi
   fi
 
   askBooleanQuestion "zsh config requires 'zsh-syntax-highlighting' plugin. Would you like to clone it?"
   if [[ $? -eq $TRUE ]]; then
-    cloneGitRepo https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+    cloneGitRepo 'https://github.com/zsh-users/zsh-syntax-highlighting.git' "${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
     [[ $? -ne 0 ]] && is_installation_successful=$FALSE
   fi
 
   askBooleanQuestion "zsh config requires 'zsh-autosuggestions' plugin. Would you like to clone it?"
   if [[ $? -eq $TRUE ]]; then
-    cloneGitRepo https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+    cloneGitRepo 'https://github.com/zsh-users/zsh-autosuggestions' "${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
     [[ $? -ne 0 ]] && is_installation_successful=$FALSE
   fi
 
-  local -r zsh_configs_dir=~/.config/zsh
+  local -r zsh_configs_dir="${HOME}/.config/zsh"
 
-  symlink zsh/zshrc ~/.zshrc &&
-    createDirIfItDoesntExist $zsh_configs_dir &&
-    symlink zsh/aliases.zsh ${zsh_configs_dir}/aliases.zsh &&
-    symlink zsh/exports.zsh ${zsh_configs_dir}/exports.zsh &&
-    symlink zsh/functions.zsh ${zsh_configs_dir}/functions.zsh
+  symlink 'zsh/zshrc' "${HOME}/.zshrc" &&
+    createDirIfItDoesntExist "$zsh_configs_dir" &&
+    symlink 'zsh/aliases.zsh' "${zsh_configs_dir}/aliases.zsh" &&
+    symlink 'zsh/exports.zsh' "${zsh_configs_dir}/exports.zsh" &&
+    symlink 'zsh/functions.zsh' "${zsh_configs_dir}/functions.zsh"
 
   [[ $? -ne 0 ]] && return 1
 
   askBooleanQuestion "Would you like to also symlink 'zprofile' (automatically starts Xorg session)?"
   if [[ $? -eq $TRUE ]]; then
-    symlink zsh/zprofile ~/.zprofile || return 1
+    symlink 'zsh/zprofile' "${HOME}/.zprofile" || return 1
   fi
 
   [[ $is_installation_successful -eq $TRUE ]] && addInstalledConfig 'zsh'
 }
 
+installXorg() {
+  [[ $# -ne 0 ]] && internalError "installXorg() expects no arguments"
+
+  echo "Installing: xorg config"
+
+  symlink 'xorg/xinitrc.sh' "${HOME}/.xinitrc" || return 1
+
+  askBooleanQuestion "[ROOT] - Would you like to also symlink '10-keyboard.conf' (enables Polish character support)?"
+  if [[ $? -eq $TRUE ]]; then
+    symlink 'xorg/10-keyboard.conf' '/usr/share/X11/xorg.conf.d/10-keyboard.conf' 'root' || return 1
+  fi
+
+  addInstalledConfig 'xorg'
+}
+
 installEverything() {
-  [[ $# -ne 0 ]] && throwInternalErr "installEverything() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installEverything() expects no arguments"
 
   local config
   for config in "${CONFIGS[@]}"; do
     install${config^} && echo
 
     if [[ $? -ne 0 ]]; then
-      logErr "$config installation failed"
+      logError "$config installation failed"
       break
     fi
   done
@@ -564,13 +568,13 @@ installEverything() {
 ##################################################
 
 openManual() {
-  [[ $# -ne 0 ]] && throwInternalErr "openManual() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "openManual() expects no arguments"
 
   printManual | "$PAGER"
 }
 
 openMainMenu() {
-  [[ $# -ne 0 ]] && throwInternalErr "openMainMenu() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "openMainMenu() expects no arguments"
 
   local -r menu="
     ##################################################
@@ -605,7 +609,7 @@ openMainMenu() {
 }
 
 openOptionsMenu() {
-  [[ $# -ne 0 ]] && throwInternalErr "openOptionsMenu() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "openOptionsMenu() expects no arguments"
 
   while true; do
     local menu="
@@ -638,7 +642,7 @@ openOptionsMenu() {
 }
 
 openSetDotfilesPrompt() {
-  [[ $# -ne 0 ]] && throwInternalErr "openSetDotfilesPrompt() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "openSetDotfilesPrompt() expects no arguments"
 
   clear
   local dotfiles_path
@@ -649,7 +653,7 @@ openSetDotfilesPrompt() {
 }
 
 openSetRootCmdPromp() {
-  [[ $# -ne 0 ]] && throwInternalErr "openSetRootCmdPromp() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "openSetRootCmdPromp() expects no arguments"
 
   clear
   read -p "Provide command for gaining root privileges: " ROOT_CMD
@@ -660,7 +664,7 @@ openSetRootCmdPromp() {
 }
 
 toggleVerboseMode() {
-  [[ $# -ne 0 ]] && throwInternalErr "toggleVerboseMode() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "toggleVerboseMode() expects no arguments"
 
   if [[ $VERBOSE_MODE -eq $FALSE ]]; then
     VERBOSE_MODE=$TRUE
@@ -670,7 +674,7 @@ toggleVerboseMode() {
 }
 
 viewInstalledConfigs() {
-  [[ $# -ne 0 ]] && throwInternalErr "viewInstalledConfigs() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "viewInstalledConfigs() expects no arguments"
 
   local menu="
     ##################################################
@@ -689,7 +693,7 @@ viewInstalledConfigs() {
 }
 
 openInstallConfigsMenu() {
-  [[ $# -ne 0 ]] && throwInternalErr "openInstallConfigsMenu() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "openInstallConfigsMenu() expects no arguments"
 
   local -r menu="
     ##################################################
@@ -709,9 +713,10 @@ openInstallConfigsMenu() {
     - '7' nvim
     - '8' pacman ~ ROOT
     - '9' picom
-    - '10' tmux
-    - '11' xorg
-    - '12' zsh
+    - '10' prettier
+    - '11' tmux
+    - '12' xorg
+    - '13' zsh
   "
 
   while true; do
@@ -725,18 +730,19 @@ openInstallConfigsMenu() {
       viewInstalledConfigs
       continue
       ;;
-    '1' | 'alacritty') installAlacritty ;;
-    '2' | 'awesome') installAwesome ;;
-    '3' | 'clang-format') installClangFormat ;;
-    '4' | 'fonts') installFonts ;;
-    '5' | 'git') installGit ;;
-    '6' | 'grub') installGrub ;;
-    '7' | 'nvim') installNvim ;;
-    '8' | 'pacman') installPacman ;;
-    '9' | 'picom') installPicom ;;
-    '10' | 'tmux') installTmux ;;
-    '11' | 'xorg') installXorg ;;
-    '12' | 'zsh') installZsh ;;
+    1 | 'alacritty') installAlacritty ;;
+    2 | 'awesome') installAwesome ;;
+    3 | 'clang-format') installClangFormat ;;
+    4 | 'fonts') installFonts ;;
+    5 | 'git') installGit ;;
+    6 | 'grub') installGrub ;;
+    7 | 'nvim') installNvim ;;
+    8 | 'pacman') installPacman ;;
+    9 | 'picom') installPicom ;;
+    10 | 'prettier') installPrettier ;;
+    11 | 'tmux') installTmux ;;
+    12 | 'xorg') installXorg ;;
+    13 | 'zsh') installZsh ;;
     *) echo "Invalid option: '${option}'" ;;
     esac
 
@@ -745,7 +751,7 @@ openInstallConfigsMenu() {
 }
 
 startTUI() {
-  [[ $# -ne 0 ]] && throwInternalErr "startTUI() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "startTUI() expects no arguments"
 
   openMainMenu
   exit 0
@@ -757,7 +763,7 @@ startTUI() {
 
 # @args config arguments passed to the script
 ensureValidityOfConfigArgs() {
-  [[ $# -eq 0 ]] && throwInternalErr "ensureValidityOfConfigArgs() expects config arguments"
+  [[ $# -eq 0 ]] && internalError "ensureValidityOfConfigArgs() expects config arguments"
 
   local are_all_config_args_valid=$TRUE
   local config_arg
@@ -784,7 +790,7 @@ ensureValidityOfConfigArgs() {
 
 # @args config arguments passed to the script
 processConfigArgs() {
-  [[ $# -eq 0 ]] && throwInternalErr "processConfigArgs() expects config arguments"
+  [[ $# -eq 0 ]] && internalError "processConfigArgs() expects config arguments"
 
   local config_arg
 
@@ -792,7 +798,7 @@ processConfigArgs() {
     install${config_arg^} && echo
 
     if [[ $? -ne 0 ]]; then
-      logErr "$config installation failed"
+      logError "$config installation failed"
       break
     fi
   done
@@ -800,7 +806,7 @@ processConfigArgs() {
 
 # @args config arguments passed to the script
 startCLI() {
-  [[ $# -eq 0 ]] && throwInternalErr "startCLI() expects config arguments"
+  [[ $# -eq 0 ]] && internalError "startCLI() expects config arguments"
 
   ensureValidityOfConfigArgs "$@"
   processConfigArgs "$@"
@@ -819,8 +825,8 @@ while getopts ':hvd:r:' FLAG; do
   v) VERBOSE_MODE=$TRUE ;;
   d) DOTFILES="$OPTARG" ;;
   r) ROOT_CMD="$OPTARG" ;;
-  :) throwErr "flag '-${OPTARG}' requires argument" $MISSING_ARG_ERROR_CODE ;;
-  ?) throwErr "invalid flag '-${OPTARG}' supplied" $INVALID_FLAG_ERROR_CODE ;;
+  :) error "flag '-${OPTARG}' requires argument" $MISSING_ARG_ERROR_CODE ;;
+  ?) error "invalid flag '-${OPTARG}' supplied" $INVALID_FLAG_ERROR_CODE ;;
   esac
 done
 
@@ -829,7 +835,7 @@ shift $((OPTIND - 1))
 
 # check if too many arguments were supplied
 [[ $# -gt $MAX_ARG_COUNT ]] &&
-  throwErr "too many arguments supplied (max number: ${MAX_ARG_COUNT})" $TOO_MANY_ARGS_ERROR_CODE
+  error "too many arguments supplied (max number: ${MAX_ARG_COUNT})" $TOO_MANY_ARGS_ERROR_CODE
 
 # determine EXECUTION_MODE
 if [[ $# -eq 0 ]]; then
