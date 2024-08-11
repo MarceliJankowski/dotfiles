@@ -34,6 +34,7 @@ readonly CONFIGS=(
   'pacman'
   'picom'
   'prettier'
+  'stylua'
   'tmux'
   'xorg'
   'zsh'
@@ -469,6 +470,15 @@ installPrettier() {
   echo "Prettier installation is tied to zsh; please refer to '${prettier_info}'"
 }
 
+installStylua() {
+  [[ $# -ne 0 ]] && throwInternalErr "installStylua() expects no arguments"
+
+  echo "Installing: stylua config"
+
+  symlink 'stylua/stylua.toml' "${HOME}/.stylua.toml" &&
+    addInstalledConfig 'stylua'
+}
+
 installTmux() {
   [[ $# -ne 0 ]] && internalError "installTmux() expects no arguments"
 
@@ -714,9 +724,10 @@ openInstallConfigsMenu() {
     - '8' pacman ~ ROOT
     - '9' picom
     - '10' prettier
-    - '11' tmux
-    - '12' xorg
-    - '13' zsh
+    - '11' stylua
+    - '12' tmux
+    - '13' xorg
+    - '14' zsh
   "
 
   while true; do
@@ -740,9 +751,10 @@ openInstallConfigsMenu() {
     8 | 'pacman') installPacman ;;
     9 | 'picom') installPicom ;;
     10 | 'prettier') installPrettier ;;
-    11 | 'tmux') installTmux ;;
-    12 | 'xorg') installXorg ;;
-    13 | 'zsh') installZsh ;;
+    11 | 'stylua') installStylua ;;
+    12 | 'tmux') installTmux ;;
+    13 | 'xorg') installXorg ;;
+    14 | 'zsh') installZsh ;;
     *) echo "Invalid option: '${option}'" ;;
     esac
 

@@ -1,38 +1,42 @@
 return {
-	"stevearc/conform.nvim", -- lightweight yet powerful formatter plugin
-	event = { "BufReadPre", "BufNewFile" },
-	opts = {
-		formatters_by_ft = {
-			lua = { "stylua" },
-			python = { "ruff_format" },
-			javascript = { "prettierd" },
-			typescript = { "prettierd" },
-			javascriptreact = { "prettierd" },
-			typescriptreact = { "prettierd" },
-			css = { "prettierd" },
-			scss = { "prettierd" },
-			html = { "prettierd" },
-			json = { "prettierd" },
-			yaml = { "prettierd" },
-			markdown = { "prettierd" },
-			sh = { "shfmt" },
-			php = { "php_cs_fixer" },
-			c = { "clang_format" },
-			cpp = { "clang_format" },
-			cs = { "clang_format" },
-			tex = { "latexindent" },
-		},
+  "stevearc/conform.nvim", -- lightweight yet powerful formatter plugin
+  event = { "BufReadPre", "BufNewFile" },
+  opts = {
+    formatters_by_ft = {
+      lua = { "stylua" },
+      python = { "ruff_format" },
+      javascript = { "prettierd" },
+      typescript = { "prettierd" },
+      javascriptreact = { "prettierd" },
+      typescriptreact = { "prettierd" },
+      css = { "prettierd" },
+      scss = { "prettierd" },
+      html = { "prettierd" },
+      json = { "prettierd" },
+      yaml = { "prettierd" },
+      markdown = { "prettierd" },
+      sh = { "shfmt" },
+      php = { "php_cs_fixer" },
+      c = { "clang_format" },
+      cpp = { "clang_format" },
+      cs = { "clang_format" },
+      tex = { "latexindent" },
+    },
 
-		formatters = {
-			clang_format = {
-				command = "clang-format",
-				args = { "--style=file", "--fallback-style=chromium" },
-			},
-		},
+    formatters = {
+      clang_format = {
+        command = "clang-format",
+        args = { "--style=file", "--fallback-style=chromium" },
+      },
+      stylua = {
+        command = "stylua",
+        args = { "--search-parent-directories", "-" },
+      },
+    },
 
-		format_on_save = {
-			timeout_ms = 500,
-			lsp_fallback = true, -- fallback to formatting with LSP if the formatter is not available
-		},
-	},
+    format_on_save = {
+      timeout_ms = 500,
+      lsp_fallback = true, -- fallback to formatting with LSP if the formatter is not available
+    },
+  },
 }

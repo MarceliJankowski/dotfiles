@@ -14,17 +14,17 @@ local opts = { clear = true }
 local rememberFoldsGroup = augroup("rememberFolds", opts)
 
 autocmd("BufWinLeave", {
-	pattern = "?*",
-	command = "mkview",
-	group = rememberFoldsGroup,
-	desc = 'create a "snapshot" of current buffer (saves folds)',
+  pattern = "?*",
+  command = "mkview",
+  group = rememberFoldsGroup,
+  desc = 'create a "snapshot" of current buffer (saves folds)',
 })
 
 autocmd("BufWinEnter", {
-	pattern = "?*",
-	command = "silent! loadview",
-	group = rememberFoldsGroup,
-	desc = 'load (if available) "snapshot" of the current buffer (restores folds)',
+  pattern = "?*",
+  command = "silent! loadview",
+  group = rememberFoldsGroup,
+  desc = 'load (if available) "snapshot" of the current buffer (restores folds)',
 })
 
 --------------------------------------------------
@@ -34,9 +34,9 @@ autocmd("BufWinEnter", {
 local deleteMarksPermamentlyGroup = augroup("deleteMarksPermamently", opts)
 
 autocmd("BufWritePre", {
-	command = "wshada!",
-	group = deleteMarksPermamentlyGroup,
-	desc = "write to ShaDa file (deletes marks permamently)",
+  command = "wshada!",
+  group = deleteMarksPermamentlyGroup,
+  desc = "write to ShaDa file (deletes marks permamently)",
 })
 
 --------------------------------------------------
@@ -46,9 +46,9 @@ autocmd("BufWritePre", {
 local highlightYankedTextGroup = augroup("highlightYankedText", opts)
 
 autocmd("TextYankPost", {
-	command = 'silent! lua vim.highlight.on_yank({ higroup="IncSearch", timeout=350 })',
-	group = highlightYankedTextGroup,
-	desc = "highlight yanked text",
+  command = 'silent! lua vim.highlight.on_yank({ higroup="IncSearch", timeout=350 })',
+  group = highlightYankedTextGroup,
+  desc = "highlight yanked text",
 })
 
 --------------------------------------------------
@@ -60,7 +60,7 @@ autocmd("TextYankPost", {
 local stopNewlineCommentContinuationGroup = augroup("stopNewlineCommentContinuation", opts)
 
 autocmd("FileType", {
-	command = "setlocal formatoptions-=cro",
-	group = stopNewlineCommentContinuationGroup,
-	desc = "stop newline comment continuation",
+  command = "setlocal formatoptions-=cro",
+  group = stopNewlineCommentContinuationGroup,
+  desc = "stop newline comment continuation",
 })
