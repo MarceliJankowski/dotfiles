@@ -1,2 +1,2 @@
-require("config/lazy") -- plugins
-require("config/user") -- user configs
+require("config.lazy") -- plugins
+require("config.user") -- user configs
