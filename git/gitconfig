@@ -9,6 +9,7 @@
 	ls = ls-files
 	diffs = diff --staged
 	stall = stash --all
+	fop = fetch origin --prune
 	cane = commit --amend --no-edit # Commit Amend No Edit
   pushf = push --force-with-lease # push force (safer)
   bblame = blame -w -C -C -C # better blame
