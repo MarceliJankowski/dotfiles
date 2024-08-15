@@ -22,18 +22,12 @@ return {
       cs = { "clang_format" },
       tex = { "latexindent" },
     },
-
     formatters = {
       clang_format = {
         command = "clang-format",
-        args = { "--style=file", "--fallback-style=chromium" },
-      },
-      stylua = {
-        command = "stylua",
-        args = { "--search-parent-directories", "-" },
+        prepend_args = { "--style=file", "--fallback-style=chromium" },
       },
     },
-
     format_on_save = {
       timeout_ms = 500,
       lsp_fallback = true, -- fallback to formatting with LSP if the formatter is not available
