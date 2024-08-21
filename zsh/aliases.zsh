@@ -19,7 +19,6 @@ alias cp='cp -i'
 alias curl="curl -w '\n'"
 
 # nvim
-alias v='nvim'
 alias vi='nvim'
 alias vim='nvim'
 
@@ -35,3 +34,4 @@ alias dotfiles='$EDITOR $DOTFILES'
 alias notes='$EDITOR $NOTES'
 alias docker-compse='docker-compose'
 alias t='tmux'
+alias u='cd ..'
