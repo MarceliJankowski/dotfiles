@@ -45,12 +45,12 @@ source "${HOME}/.config/zsh/functions.zsh"
 bindkey '^h' backward-kill-word
 
 # functions.zsh keymaps
-bindkey -s '^f^d' 'fdir^M'
-bindkey -s '^f^r^d' 'rfdir^M'
-bindkey -s '^f^v' 'fdirv^M'
-bindkey -s '^f^r^v' 'rfdirv^M'
-bindkey -s '^f^f' 'ffilev^M'
-bindkey -s '^f^r^f' 'rffilev^M'
+bindkey -s '^f^d' '^e^ufdir^M'
+bindkey -s '^f^r^d' '^e^urfdir^M'
+bindkey -s '^f^v' '^e^ufdirv^M'
+bindkey -s '^f^r^v' '^e^urfdirv^M'
+bindkey -s '^f^f' '^e^uffilev^M'
+bindkey -s '^f^r^f' '^e^urffilev^M'
 
 # increase keyboard repeat rate (start repeating key press after 300 milliseconds, and then repeat it 50 times a second)
 xset r rate 300 50
