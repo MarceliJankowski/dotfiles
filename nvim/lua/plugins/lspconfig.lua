@@ -26,7 +26,7 @@ return {
     --------------------------------------------------
 
     lspconfig.vimls.setup({})
-    lspconfig.tsserver.setup({})
+    lspconfig.ts_ls.setup({})
     lspconfig.bashls.setup({})
     lspconfig.cssls.setup({})
     lspconfig.cssmodules_ls.setup({})
