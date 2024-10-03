@@ -1,11 +1,9 @@
 return {
-  "airblade/vim-rooter", -- changes working directory to the project root whenever file or directory is opened
+  "airblade/vim-rooter", -- changes working directory to project root directory whenever file/directory is opened
   config = function()
-    -- list of patterns identifying root directory
+    -- list of patterns identifying project root directory
     vim.g.rooter_patterns = {
       ".git",
-      "README.md",
-      "Makefile",
     }
 
     -- change directories silently (without echoing)
