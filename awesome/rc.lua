@@ -299,7 +299,7 @@ root.buttons(gears.table.join(
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
-  -- brightness control:
+  -- brightness control
   awful.key({ modkey }, ";", function()
     brightness_widget:inc()
   end, { description = "increase brightness", group = "brightness" }),
@@ -308,7 +308,7 @@ globalkeys = gears.table.join(
     brightness_widget:dec()
   end, { description = "decrease brightness", group = "brightness" }),
 
-  -- volume control:
+  -- volume control
   awful.key({ modkey }, "]", function()
     awful.spawn.with_shell("pactl -- set-sink-volume @DEFAULT_SINK@ +5%")
   end, { description = "increase volume", group = "volume" }),
@@ -336,7 +336,6 @@ globalkeys = gears.table.join(
     mymainmenu:show()
   end, { description = "show main menu", group = "awesome" }),
 
-  -- Layout manipulation
   awful.key({ modkey, "Shift" }, "j", function()
     awful.client.swap.byidx(1)
   end, { description = "swap with next client by index", group = "client" }),
@@ -357,13 +356,16 @@ globalkeys = gears.table.join(
     end
   end, { description = "go back", group = "client" }),
 
-  -- Standard program
   awful.key({ modkey }, "t", function()
     awful.spawn(terminal)
   end, { description = "open terminal", group = "launcher" }),
   awful.key({ modkey }, "b", function()
     awful.spawn("firefox")
   end, { description = "open firefox", group = "launcher" }),
+  awful.key({ modkey, "Control", "Shift" }, "l", function()
+    awful.spawn("betterlockscreen --lock")
+  end, { description = "lock screen", group = "launcher" }),
+
   awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
   awful.key({ modkey, "Control", "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
 
