@@ -197,7 +197,7 @@ awful.screen.connect_for_each_screen(function(s)
   local l = awful.layout.suit -- less typing
 
   -- tag names / icons
-  local names = { "  ", " 󰈹 ", " 󰒓 ", " 󰈔 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }
+  local names = { "  ", " 󰈹 ", " 󰒓 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }
 
   -- default layouts for tags
   local layouts = { l.tile, l.tile, l.tile, l.tile, l.tile, l.tile, l.tile, l.tile, l.tile }
