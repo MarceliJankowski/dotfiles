@@ -310,8 +310,12 @@ globalkeys = gears.table.join(
 
   -- volume control
   awful.key({ modkey }, "]", function()
-    awful.spawn.with_shell("pactl -- set-sink-volume @DEFAULT_SINK@ +5%")
-  end, { description = "increase volume", group = "volume" }),
+    awful.spawn.with_shell([[
+      pactl set-sink-volume @DEFAULT_SINK@ $(
+        pactl get-sink-volume @DEFAULT_SINK@ | awk 'NR == 1 { print ($5+5 <= 100 ? $5+5 : 100)"%" }'
+      )
+    ]])
+  end, { description = "increase volume up to 100%", group = "volume" }),
 
   awful.key({ modkey }, "[", function()
     awful.spawn.with_shell("pactl -- set-sink-volume @DEFAULT_SINK@ -5%")
