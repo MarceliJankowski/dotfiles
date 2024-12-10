@@ -40,6 +40,7 @@ return {
     lspconfig.phpactor.setup({})
     lspconfig.clangd.setup({})
     lspconfig.pylsp.setup({})
+    lspconfig.eslint.setup({})
 
     lspconfig.emmet_ls.setup({
       filetypes = {
