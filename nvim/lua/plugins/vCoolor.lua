@@ -4,7 +4,7 @@ return {
     { "<M-c>", "<Cmd>VCoolor<CR>", mode = { "n", "i" }, desc = "pick hex color" },
   },
   cmd = "VCoolor",
-  config = function()
+  init = function()
     -- generate colors in lower case
     vim.g.vcoolor_lowercase = 1
 

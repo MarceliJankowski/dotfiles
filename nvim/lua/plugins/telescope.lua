@@ -1,38 +1,36 @@
 return {
   "nvim-telescope/telescope.nvim", -- fuzzy finder
-  tag = "0.1.6",
+  branch = "0.1.x",
   dependencies = {
     "nvim-lua/plenary.nvim", -- collection of nvim lua functions
     "nvim-telescope/telescope-media-files.nvim", -- extension for viewing media files
   },
-  config = function()
+  opts = {
+    defaults = {
+      layout_strategy = "horizontal",
+      layout_config = {
+        width = 0.92,
+        height = 0.92,
+        preview_width = function(_, columns)
+          return math.floor(columns * 0.55) -- 55% of available columns / window width
+        end,
+      },
+    },
+    extensions = {
+      media_files = {
+        filetypes = { "png", "webp", "jpg", "jpeg" },
+        find_cmd = "rg", -- defaults to `fd` (ripgrep is faster)
+      },
+    },
+  },
+  config = function(_, opts)
     local telescope = require("telescope")
-
-    -- load media-files extension
-    telescope.load_extension("media_files")
-
-    telescope.setup({
-      defaults = {
-        layout_strategy = "horizontal",
-        layout_config = {
-          width = 0.92,
-          height = 0.92,
-          preview_width = function(_, columns)
-            return math.floor(columns * 0.55) -- 55% of available columns / window width
-          end,
-        },
-      },
-      extensions = {
-        media_files = {
-          filetypes = { "png", "webp", "jpg", "jpeg" },
-          find_cmd = "rg", -- defaults to `fd` (ripgrep is faster)
-        },
-      },
-    })
-
-    -- KEYMAPS
     local telescope_builtin = require("telescope.builtin")
 
+    telescope.setup(opts)
+    telescope.load_extension("media_files")
+
+    -- KEYMAPS
     vim.keymap.set("n", "<leader>ff", telescope_builtin.find_files)
     vim.keymap.set("n", "<leader>fg", telescope_builtin.live_grep)
     vim.keymap.set("n", "<leader>fb", telescope_builtin.buffers)

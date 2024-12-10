@@ -8,7 +8,7 @@ return {
     "hrsh7th/cmp-nvim-lua", -- source for neovim lua API
     "saadparwaiz1/cmp_luasnip", -- source for luasnip completion
   },
-  config = function()
+  opts = function()
     -- find more here: https://www.nerdfonts.com/cheat-sheet
     local kind_icons = {
       Text = "󰦨",
@@ -40,7 +40,7 @@ return {
 
     local cmp = require("cmp")
 
-    cmp.setup({
+    return {
       snippet = {
         -- REQUIRED - you must specify a snippet engine
         expand = function(args)
@@ -104,6 +104,6 @@ return {
           { name = "cmdline" },
         }),
       }),
-    })
+    }
   end,
 }

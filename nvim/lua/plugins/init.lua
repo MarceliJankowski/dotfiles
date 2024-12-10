@@ -13,7 +13,7 @@ return {
 
   {
     "moll/vim-bbye", -- deletes buffers without messing up layout
-    config = function()
+    init = function()
       vim.keymap.set({ "n", "v", "x" }, "<C-w>", "<Cmd>Bdelete<CR>")
     end,
   },

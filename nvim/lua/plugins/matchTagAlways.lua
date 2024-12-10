@@ -1,6 +1,6 @@
 return {
   "Valloric/MatchTagAlways", -- highlights XML/HTML tag which encloses my cursor
-  config = function()
+  init = function()
     -- enable plugin in these filetypes:
     vim.g.mta_filetypes = {
       typescriptreact = 1,
