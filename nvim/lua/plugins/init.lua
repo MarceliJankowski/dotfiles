@@ -13,9 +13,9 @@ return {
 
   {
     "moll/vim-bbye", -- deletes buffers without messing up layout
-    init = function()
-      vim.keymap.set({ "n", "v", "x" }, "<C-w>", "<Cmd>Bdelete<CR>")
-    end,
+    keys = {
+      { "<C-w>", "<Cmd>Bdelete<CR>", mode = { "n", "v", "x" } },
+    },
   },
 
   --------------------------------------------------

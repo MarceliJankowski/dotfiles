@@ -16,8 +16,8 @@ return {
       { type = "dir", header = { "   Current Directory:" .. vim.fn.expand("%") } },
       { type = "files", header = { "   Recent Files" } },
     }
-
-    -- KEYMAPS
-    vim.keymap.set("n", "<leader>s", "<Cmd>Startify<CR>")
   end,
+  keys = {
+    { "<leader>s", "<Cmd>Startify<CR>" },
+  },
 }
