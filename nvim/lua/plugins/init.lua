@@ -65,4 +65,11 @@ return {
     "mrcjkb/rustaceanvim", -- rust development tools
     lazy = false, -- this plugin is already lazy
   },
+
+  {
+    "github/copilot.vim", -- GitHub Copilot integration
+    init = function()
+      vim.g.copilot_enabled = false
+    end,
+  },
 }
