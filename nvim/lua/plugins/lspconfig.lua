@@ -61,18 +61,33 @@ return {
     })
 
     lspconfig.lua_ls.setup({
-      settings = {
-        Lua = {
-          diagnostics = {
-            globals = { "vim" },
+      cmd = { "lua-language-server", "--force_accept_workspace" },
+      on_init = function(client)
+        if client.workspace_folders then
+          local path = client.workspace_folders[1].name
+          if
+            path ~= vim.fn.stdpath("config")
+            and (vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc"))
+          then
+            return
+          end
+        end
+
+        client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+          runtime = {
+            version = "LuaJIT",
           },
+          -- Make the server aware of Neovim runtime files
           workspace = {
+            checkThirdParty = false,
             library = {
-              [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-              [vim.fn.stdpath("config") .. "/lua"] = true,
+              vim.env.VIMRUNTIME,
             },
           },
-        },
+        })
+      end,
+      settings = {
+        Lua = {},
       },
     })
 
