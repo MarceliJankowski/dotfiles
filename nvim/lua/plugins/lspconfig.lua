@@ -39,7 +39,7 @@ return {
     lspconfig.yamlls.setup({})
     lspconfig.phpactor.setup({})
     lspconfig.clangd.setup({})
-    lspconfig.pylsp.setup({})
+    lspconfig.pyright.setup({})
     lspconfig.eslint.setup({})
 
     lspconfig.emmet_ls.setup({
