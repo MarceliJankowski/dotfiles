@@ -1,5 +1,5 @@
 return {
-  "neovim/nvim-lspconfig", -- configs for neovim LSP client
+  "neovim/nvim-lspconfig", -- collection of default neovim LSP client configs
   lazy = false,
   dependencies = {
     -- these two need to run first, so that servers can be automatically installed (see: 'help mason-lspconfig')
@@ -44,7 +44,7 @@ return {
     lspconfig.emmet_ls.setup({})
 
     lspconfig.lua_ls.setup({
-      cmd = { "lua-language-server", "--force_accept_workspace" },
+      root_dir = lspconfig.util.root_pattern(".git"),
       on_init = function(client)
         if client.workspace_folders then
           local path = client.workspace_folders[1].name
