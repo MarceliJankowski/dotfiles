@@ -41,24 +41,7 @@ return {
     lspconfig.clangd.setup({})
     lspconfig.pyright.setup({})
     lspconfig.eslint.setup({})
-
-    lspconfig.emmet_ls.setup({
-      filetypes = {
-        "css",
-        "eruby",
-        "html",
-        "javascript",
-        "javascriptreact",
-        "less",
-        "sass",
-        "scss",
-        "svelte",
-        "pug",
-        "typescriptreact",
-        "vue",
-        "php",
-      },
-    })
+    lspconfig.emmet_ls.setup({})
 
     lspconfig.lua_ls.setup({
       cmd = { "lua-language-server", "--force_accept_workspace" },
