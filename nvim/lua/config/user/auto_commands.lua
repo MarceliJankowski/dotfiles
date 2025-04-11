@@ -1,5 +1,5 @@
 --------------------------------------------------
---               LOCAL VARIABLES                --
+--               MODULE VARIABLES               --
 --------------------------------------------------
 
 local autocmd = vim.api.nvim_create_autocmd
@@ -11,44 +11,42 @@ local opts = { clear = true }
 --------------------------------------------------
 -- 'pattern' field uses shell globs, not RegExpr ('?*' makes sure that buffer has a name)
 
-local rememberFoldsGroup = augroup("rememberFolds", opts)
+do
+  local remember_folds_group = augroup("rememberFolds", opts)
 
-autocmd("BufWinLeave", {
-  pattern = "?*",
-  command = "mkview",
-  group = rememberFoldsGroup,
-  desc = 'create a "snapshot" of current buffer (saves folds)',
-})
+  autocmd("BufWinLeave", {
+    desc = 'create a "snapshot" of current buffer (saves folds)',
+    group = remember_folds_group,
+    pattern = "?*",
+    command = "mkview",
+  })
 
-autocmd("BufWinEnter", {
-  pattern = "?*",
-  command = "silent! loadview",
-  group = rememberFoldsGroup,
-  desc = 'load (if available) "snapshot" of the current buffer (restores folds)',
-})
+  autocmd("BufWinEnter", {
+    desc = 'load (if available) "snapshot" of the current buffer (restores folds)',
+    group = remember_folds_group,
+    pattern = "?*",
+    command = "silent! loadview",
+  })
+end
 
 --------------------------------------------------
 --           PERMAMENTLY DELETE MARKS           --
 --------------------------------------------------
 
-local deleteMarksPermamentlyGroup = augroup("deleteMarksPermamently", opts)
-
 autocmd("BufWritePre", {
-  command = "wshada!",
-  group = deleteMarksPermamentlyGroup,
   desc = "write to ShaDa file (deletes marks permamently)",
+  group = augroup("deleteMarksPermamently", opts),
+  command = "wshada!",
 })
 
 --------------------------------------------------
 --            HIGHLIGHT YANKED TEXT             --
 --------------------------------------------------
 
-local highlightYankedTextGroup = augroup("highlightYankedText", opts)
-
 autocmd("TextYankPost", {
-  command = 'silent! lua vim.highlight.on_yank({ higroup="IncSearch", timeout=350 })',
-  group = highlightYankedTextGroup,
   desc = "highlight yanked text",
+  group = augroup("highlightYankedText", opts),
+  command = 'silent! lua vim.highlight.on_yank({ higroup="IncSearch", timeout=350 })',
 })
 
 --------------------------------------------------
@@ -57,10 +55,8 @@ autocmd("TextYankPost", {
 -- 'formatoptions' setting gets overwritten by 'ftplugin' (internal vim plugin), I'm accounting for that by setting it inside of this autocommand
 -- useful article: https://vim.fandom.com/wiki/Disable_automatic_comment_insertion
 
-local stopNewlineCommentContinuationGroup = augroup("stopNewlineCommentContinuation", opts)
-
 autocmd("FileType", {
-  command = "setlocal formatoptions-=cro",
-  group = stopNewlineCommentContinuationGroup,
   desc = "stop newline comment continuation",
+  group = augroup("stopNewlineCommentContinuation", opts),
+  command = "setlocal formatoptions-=cro",
 })

@@ -7,22 +7,18 @@ return {
     "williamboman/mason-lspconfig.nvim",
   },
   config = function()
-    --------------------------------------------------
-    --                   DEFAULTS                   --
-    --------------------------------------------------
-
-    local lsp_defaults = {
-      -- set capabilities for cmp
-      capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    }
-
     local lspconfig = require("lspconfig")
 
-    -- extend default configuration so that I don't have to manually assign it to every LSP server
-    lspconfig.util.default_config = vim.tbl_deep_extend("force", lspconfig.util.default_config, lsp_defaults)
+    --------------------------------------------------
+    --            SERVER CONFIG DEFAULTS            --
+    --------------------------------------------------
+
+    lspconfig.util.default_config = vim.tbl_deep_extend("force", lspconfig.util.default_config, {
+      capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
+    })
 
     --------------------------------------------------
-    --                   SERVERS                    --
+    --                SERVER CONFIGS                --
     --------------------------------------------------
 
     lspconfig.vimls.setup({})
@@ -75,73 +71,39 @@ return {
     })
 
     --------------------------------------------------
-    --                 AUTOCOMMANDS                 --
+    --                AUTO COMMANDS                 --
     --------------------------------------------------
 
+    -- set keymaps for buffers with attached LSP
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
-        -- Enable completion triggered by <C-x><C-o>
-        vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
-
-        -- Buffer local mappings.
-        -- See `:help vim.lsp.*` for documentation on any of the below functions
-        local map = vim.keymap.set
-        local mappingOpts = { buffer = ev.buf, noremap = true, silent = true }
-        map("n", "gD", vim.lsp.buf.declaration, mappingOpts)
-        map("n", "gd", vim.lsp.buf.definition, mappingOpts)
-        map("n", "gh", vim.lsp.buf.hover, mappingOpts)
-        map("n", "gi", vim.lsp.buf.implementation, mappingOpts)
-        map("n", "<leader>D", vim.lsp.buf.type_definition, mappingOpts)
-        map("n", "<leader>a", vim.lsp.buf.code_action, mappingOpts)
-        map("n", "<M-r>", vim.lsp.buf.rename, mappingOpts)
-
-        -- show line diagnostics automatically in hover window
-        -- wiki: https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization
-        vim.api.nvim_create_autocmd("CursorHold", {
-          buffer = bufnr,
-          callback = function()
-            local diagnosticOpts = {
-              focusable = false,
-              close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-              -- border = "rounded",
-              source = "always",
-              prefix = " ",
-              scope = "cursor",
-            }
-            vim.diagnostic.open_float(nil, diagnosticOpts)
-          end,
-        })
+        local keymap_opts = { buffer = ev.buf, noremap = true, silent = true }
+        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, keymap_opts)
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, keymap_opts)
+        vim.keymap.set("n", "gh", vim.lsp.buf.hover, keymap_opts)
+        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, keymap_opts)
+        vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, keymap_opts)
+        vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, keymap_opts)
+        vim.keymap.set("n", "<M-r>", vim.lsp.buf.rename, keymap_opts)
       end,
     })
 
-    --------------------------------------------------
-    --   FIX RED HIGHLIGHTS IN HOVER DEFINITIONS    --
-    --------------------------------------------------
-    -- fixes symbols like '_' being highlighted in red
-
-    local fixRedHighlightsInHoverDefinitionsGroup =
-      vim.api.nvim_create_augroup("fixRedHighlightsInHoverDefinitions", { clear = true })
-
-    vim.api.nvim_create_autocmd("FileType", {
-      group = fixRedHighlightsInHoverDefinitionsGroup,
-      pattern = "*",
+    -- display line diagnostics upon cursor hover
+    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+      group = vim.api.nvim_create_augroup("floatDiagnosticCursor", { clear = true }),
       callback = function()
-        if vim.bo.filetype ~= "markdown" then
-          vim.cmd("highlight link markdownError NONE")
-        end
+        vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
       end,
-      desc = "fix red highlights in hover definitions by disabling markdownError highlighting (doesn't affect markdown filetype)",
     })
 
     --------------------------------------------------
-    --                   VISUALS                    --
+    --                MISCELLANEOUS                 --
     --------------------------------------------------
+    -- wiki: https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization
 
-    -- customize how diagnostics are displayed
     vim.diagnostic.config({
       virtual_text = false,
-      signs = true,
       underline = true,
       update_in_insert = false,
       severity_sort = true,

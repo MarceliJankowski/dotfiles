@@ -5,17 +5,17 @@ return {
     vim.g.qs_highlight_on_keys = { "f", "F", "t", "T" }
 
     -- set colors
-    local quickScopeColorsGroup = vim.api.nvim_create_augroup("quickScopeColors", { clear = true })
+    local quick_scope_colors_group = vim.api.nvim_create_augroup("quickScopeColors", { clear = true })
 
     vim.api.nvim_create_autocmd("ColorScheme", {
       command = "highlight QuickScopePrimary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline",
-      group = quickScopeColorsGroup,
+      group = quick_scope_colors_group,
       desc = "set quickScope primary highlight",
     })
 
     vim.api.nvim_create_autocmd("ColorScheme", {
       command = "highlight QuickScopeSecondary guifg='violet' gui=underline ctermfg=155 cterm=underline",
-      group = quickScopeColorsGroup,
+      group = quick_scope_colors_group,
       desc = "set quickScope secondary highlight",
     })
   end,

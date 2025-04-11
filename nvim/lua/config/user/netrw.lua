@@ -1,11 +1,11 @@
 --------------------------------------------------
---               LOCAL VARIABLES                --
+--               MODULE VARIABLES               --
 --------------------------------------------------
 
 local map = vim.keymap.set
-local originalTimeoutlen = vim.opt.timeoutlen._value
+local original_timeoutlen = vim.o.timeoutlen
 local opts = { noremap = true, silent = true, buffer = true }
-local optsRecursive = { remap = true, silent = true, buffer = true }
+local opts_recursive = { remap = true, silent = true, buffer = true }
 
 --------------------------------------------------
 --       GLOBAL VARIABLES / NETRW OPTIONS       --
@@ -23,16 +23,16 @@ vim.g.netrw_list_hide = "^\\./$" -- hide './' node (comma seperated list of Regu
 --                  FUNCTIONS                   --
 --------------------------------------------------
 
-local function getCursorPosition()
-  local cursorPosition = vim.api.nvim_win_get_cursor(0)
-  local line = cursorPosition[1]
-  local column = cursorPosition[2] + 1 -- add 1 to account for the fact that nvim_win_get_cursor() counts columns starting from 0, while vim's cursor() starts from 1
+local function get_cursor_position()
+  local cursor_position = vim.api.nvim_win_get_cursor(0)
+  local line = cursor_position[1]
+  local column = cursor_position[2] + 1 -- add 1 to account for the fact that nvim_win_get_cursor() counts columns starting from 0, while vim's cursor() starts from 1
 
-  local parsedCursorPosition = line .. "," .. column -- parsed to vim's cursor() format
-  return parsedCursorPosition
+  local parsed_cursor_position = line .. "," .. column -- parsed to vim's cursor() format
+  return parsed_cursor_position
 end
 
-local function applyNetrwMappings()
+local function apply_netrw_mappings()
   -- minimizing annoying delay between commands by lowering 'timeoutlen' inside netrw, and then restoring it with 'restoreTimeoutlen' augroup
   vim.opt.timeoutlen = 150 -- sweet spot, provides enough time to finish command sequences yet still feels "blazingly" fast
 
@@ -48,64 +48,67 @@ local function applyNetrwMappings()
   map("n", "<C-k>", "<Cmd>wincmd k<CR>", opts)
 
   -- display detailed info about currently viewed node
-  map("n", "gh", "qf", optsRecursive)
+  map("n", "gh", "qf", opts_recursive)
 
   -- delete currently viewed file and buffer of said file (if exists)
-  map("n", "D", "yy<del>:silent! bd <C-r>0<CR>", optsRecursive)
+  map("n", "D", "yy<del>:silent! bd <C-r>0<CR>", opts_recursive)
 
   -- create new file, come back to netrw, restore previous cursor position, delete new file's buffer (essentially create new file without editing it)
   map("n", "a", function()
-    local cursorPosition = getCursorPosition()
+    local cursor_position = get_cursor_position()
 
     vim.cmd("normal %") -- prompts user to create new file
 
     -- check if new file was created (and automatically opened) or user aborted (pressed 'ESC')
     if vim.bo.filetype ~= "netrw" then
-      local createdFile = vim.fn.getreg("%")
+      local created_file = vim.fn.getreg("%")
 
-      vim.cmd("write | Explore | call cursor(" .. cursorPosition .. ") | bd " .. createdFile)
+      vim.cmd("write | Explore | call cursor(" .. cursor_position .. ") | bd " .. created_file)
     else
       print("file creation aborted")
 
       -- restore cursor position (sometimes after aborting cursor moves to seemingly random line)
-      vim.cmd("call cursor(" .. cursorPosition .. ")")
+      vim.cmd("call cursor(" .. cursor_position .. ")")
     end
-  end, optsRecursive)
+  end, opts_recursive)
 
   -- create new file and edit it
-  map("n", "A", "%<Cmd>write<CR>", optsRecursive)
+  map("n", "A", "%<Cmd>write<CR>", opts_recursive)
 
   -- disable 's' (it was driving me nuts)
   map("n", "s", "<Nop>", opts)
 
   -- go up one directory
-  map("n", "u", "-", optsRecursive)
+  map("n", "u", "-", opts_recursive)
 
   -- rename currently viewed file and close buffer of said file (if exists)
-  map("n", "r", "yyR:silent! bd <C-r>0<CR>", optsRecursive)
+  map("n", "r", "yyR:silent! bd <C-r>0<CR>", opts_recursive)
 
   -- open currently viewed node, come back to netrw, restore cursor position (essentially open a file without editing it)
   map("n", "i", function()
-    local cursorPosition = getCursorPosition()
+    local cursor_position = get_cursor_position()
     vim.cmd("normal \r") -- '\r' === <CR>
-    vim.cmd("Explore | call cursor(" .. cursorPosition .. ")")
-  end, optsRecursive)
+    vim.cmd("Explore | call cursor(" .. cursor_position .. ")")
+  end, opts_recursive)
 end
 
 --------------------------------------------------
 --                AUTO COMMANDS                 --
 --------------------------------------------------
 
--- apply netrw mappings
-local applyNetrwMappingsGroup = vim.api.nvim_create_augroup("applyNetrwMappings", { clear = true })
-vim.api.nvim_create_autocmd(
-  "FileType",
-  { pattern = "netrw", callback = applyNetrwMappings, group = applyNetrwMappingsGroup }
-)
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "apply netrw mappings",
+  group = vim.api.nvim_create_augroup("applyNetrwMappings", { clear = true }),
+  pattern = "netrw",
+  callback = apply_netrw_mappings,
+})
 
--- restore 'timeoutlen' to its original value (applyNetrwMappingsGroup modifies it)
-local restoreTimeoutlenGroup = vim.api.nvim_create_augroup("restoreTimeoutlen", { clear = true })
 vim.api.nvim_create_autocmd(
   "BufEnter", -- I know it's not ideal, I just didn't have the willpower to find a better/cleaner way of handling this...
-  { pattern = "*", command = "set timeoutlen=" .. originalTimeoutlen, group = restoreTimeoutlenGroup }
+  {
+    desc = "restore 'timeoutlen' to its original value (from before netrw mappings were applied)",
+    group = vim.api.nvim_create_augroup("restoreTimeoutlen", { clear = true }),
+    pattern = "*",
+    command = "set timeoutlen=" .. original_timeoutlen,
+  }
 )

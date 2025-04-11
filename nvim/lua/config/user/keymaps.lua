@@ -8,7 +8,7 @@
 -- command: "c"
 
 --------------------------------------------------
---               LOCAL VARIABLES                --
+--               MODULE VARIABLES               --
 --------------------------------------------------
 
 local map = vim.keymap.set
@@ -87,12 +87,12 @@ map("n", "<S-Tab>", "<Cmd>bprevious<CR>", opts)
 
 -- forcefully delete current buffer if it's unnamed
 map("n", "<leader>w", function()
-  local bufferName = vim.api.nvim_buf_get_name(0)
+  local buffer_name = vim.api.nvim_buf_get_name(0)
 
-  if bufferName == "" then
+  if buffer_name == "" then
     vim.cmd("bd!")
   else
-    print("buffer: '" .. bufferName .. "' has a name!")
+    print("buffer: '" .. buffer_name .. "' has a name!")
   end
 end, opts)
 
