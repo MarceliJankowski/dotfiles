@@ -471,7 +471,7 @@ installPrettier() {
 }
 
 installStylua() {
-  [[ $# -ne 0 ]] && throwInternalErr "installStylua() expects no arguments"
+  [[ $# -ne 0 ]] && internalError "installStylua() expects no arguments"
 
   echo "Installing: stylua config"
 
