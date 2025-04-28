@@ -18,7 +18,9 @@ return {
       left = {
         "-mode",
         "left_sep",
-        "file_name",
+        function()
+          return " " .. vim.fn.expand("%")
+        end,
       },
       mid = {},
       right = {
@@ -28,7 +30,7 @@ return {
       },
     },
     defaults = {
-      bg = "#2e3c43",
+      bg = "none",
       true_colors = true,
       branch_symbol = " ",
       line_column = "%l:%c",
