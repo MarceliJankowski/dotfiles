@@ -10,15 +10,21 @@
 	diffs = diff --staged
 	stall = stash --all
 	fop = fetch origin --prune
+  pushf = push --force-with-lease
+  bblame = blame -w -C -C -C # better blame
+  rdir = rev-parse --show-toplevel
 	camend = commit --amend
 	cane = commit --amend --no-edit # Commit Amend No Edit
-  pushf = push --force-with-lease # push force (safer)
-  bblame = blame -w -C -C -C # better blame
-  rdir = rev-parse --show-toplevel # root directory
-  lc = !git log --oneline | head -n1 # last commit
-  lci = !git log --oneline | head -n1 | cut -d ' ' -f 1 # last commit identifier
-  cc = !git log --oneline | wc -l # commit count
-  showf = !git --no-pager show --name-only --pretty='' # show file names
+  lc = !git log --oneline | head -n1 # Last Commit
+  lci = !git log --oneline | head -n1 | cut -d ' ' -f 1 # Last Commit Identifier
+  cc = !git log --oneline | wc -l # Commit Count
+  showf = !git --no-pager show --name-only --pretty=''
+
+  # difftastic aliases
+  logd = -c diff.external=difft log --ext-diff --patch
+  showd = -c diff.external=difft show --ext-diff
+  diffd = -c diff.external=difft diff
+  diffsd = -c diff.external=difft diff --staged
 [core]
 	editor = $EDITOR
 [help]
