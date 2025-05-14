@@ -21,13 +21,13 @@ return {
       "typescript-language-server",
       "vim-language-server",
       "yaml-language-server",
+      "ruff",
 
       -- miscellaneous
       "stylua",
       "prettierd",
       "shfmt",
       "latexindent",
-      "ruff",
       "phpstan",
       -- "clang-format", -- use binary from PATH to ensure formatting consistency across nvim and other tooling
     },

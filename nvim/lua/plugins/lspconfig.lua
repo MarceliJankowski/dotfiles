@@ -33,6 +33,7 @@ return {
     lspconfig.pyright.setup({})
     lspconfig.eslint.setup({})
     lspconfig.emmet_ls.setup({})
+    lspconfig.ruff.setup({})
 
     lspconfig.lua_ls.setup({
       root_dir = lspconfig.util.root_pattern(".git"),

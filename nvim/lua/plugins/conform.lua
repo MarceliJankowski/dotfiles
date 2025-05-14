@@ -15,7 +15,6 @@ return {
   opts = {
     formatters_by_ft = {
       lua = { "stylua" },
-      python = { "ruff_format" },
       javascript = get_js_ts_formatter,
       typescript = get_js_ts_formatter,
       javascriptreact = get_js_ts_formatter,

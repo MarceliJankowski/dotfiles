@@ -6,7 +6,6 @@ return {
 
     lint.linters_by_ft = {
       php = { "phpstan" },
-      python = { "ruff" },
     }
 
     vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
