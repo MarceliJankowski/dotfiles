@@ -22,6 +22,7 @@ return {
       "vim-language-server",
       "yaml-language-server",
       "ruff",
+      "bash-language-server",
 
       -- miscellaneous
       "stylua",
