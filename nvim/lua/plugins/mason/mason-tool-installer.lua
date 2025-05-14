@@ -3,34 +3,36 @@ return {
   dependencies = { "williamboman/mason.nvim" },
   opts = {
     ensure_installed = {
+      -- formatters
+      "stylua",
+      "shfmt",
+      "prettierd",
+      "latexindent",
+      -- "clang-format", -- use binary from PATH to ensure formatting consistency across nvim and other tooling
+
+      -- linters
+      "phpstan",
+
       -- language servers
-      "clangd",
+      "vim-language-server",
+      "typescript-language-server",
+      "bash-language-server",
       "css-lsp",
       "cssmodules-language-server",
       "dockerfile-language-server",
-      "emmet-ls",
-      "eslint-lsp",
       "html-lsp",
       "json-lsp",
-      "lemminx",
-      "lua-language-server",
       "marksman",
-      "phpactor",
-      "pyright",
       "sqlls",
-      "typescript-language-server",
-      "vim-language-server",
+      "lemminx",
       "yaml-language-server",
+      "phpactor",
+      "clangd",
+      "pyright",
+      "eslint-lsp",
+      "emmet-ls",
       "ruff",
-      "bash-language-server",
-
-      -- miscellaneous
-      "stylua",
-      "prettierd",
-      "shfmt",
-      "latexindent",
-      "phpstan",
-      -- "clang-format", -- use binary from PATH to ensure formatting consistency across nvim and other tooling
+      "lua-language-server",
     },
   },
 }
