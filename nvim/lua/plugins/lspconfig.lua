@@ -1,11 +1,6 @@
 return {
   "neovim/nvim-lspconfig", -- collection of default neovim LSP client configs
   lazy = false,
-  dependencies = {
-    -- these two need to run first, so that servers can be automatically installed (see: 'help mason-lspconfig')
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
-  },
   config = function()
     local lspconfig = require("lspconfig")
 
