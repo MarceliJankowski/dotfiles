@@ -3,11 +3,11 @@ return {
   dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
   opts = {
     ensure_installed = {
+      -- "clang-format", -- use binary from PATH to ensure formatting consistency across nvim and other tooling
       "stylua",
       "prettierd",
       "shfmt",
       "php-cs-fixer",
-      "clang-format",
       "latexindent",
       "phpstan",
       "ruff",
