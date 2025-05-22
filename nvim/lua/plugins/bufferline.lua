@@ -1,6 +1,6 @@
 return {
   "akinsho/bufferline.nvim", -- nice buffer line
-  dependencies = "nvim-tree/nvim-web-devicons",
+  dependencies = { "nvim-tree/nvim-web-devicons", "moll/vim-bbye" },
   init = function()
     -- KEYMAPS
     vim.keymap.set("n", "<leader>p", "<Cmd>BufferLinePick<CR>")
