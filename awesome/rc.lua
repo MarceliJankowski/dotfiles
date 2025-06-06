@@ -364,8 +364,9 @@ globalkeys = gears.table.join(
     awful.spawn(terminal)
   end, { description = "open terminal", group = "launcher" }),
   awful.key({ modkey }, "b", function()
-    awful.spawn("firefox")
-  end, { description = "open firefox", group = "launcher" }),
+    local browser = assert(os.getenv("BROWSER"), "BROWSER env variable is not set")
+    awful.spawn(browser)
+  end, { description = "open browser", group = "launcher" }),
   awful.key({ modkey, "Control", "Shift" }, "l", function()
     awful.spawn("betterlockscreen --lock")
   end, { description = "lock screen", group = "launcher" }),
@@ -553,7 +554,6 @@ awful.rules.rules = {
   {
     rule_any = {
       instance = {
-        "DTA", -- Firefox addon DownThemAll.
         "copyq", -- Includes session name in class.
         "pinentry",
       },
@@ -585,9 +585,6 @@ awful.rules.rules = {
 
   -- Remove titlebars
   { rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = false } },
-
-  -- Set Firefox to always map on the tag named "2" on screen 1.
-  { rule = { class = "Firefox" }, properties = { screen = 1, tag = "www" } },
 }
 
 -- }}}

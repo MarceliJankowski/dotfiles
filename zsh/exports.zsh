@@ -9,10 +9,7 @@ export readonly NOTES="${HOME}/notes"
 export readonly FUZZY_FINDER='fzf'
 export readonly FZF_DEFAULT_COMMAND="fd --type f --ignore --hidden --exclude={.git,node_modules,bin,build,dist}"
 export readonly PRETTIERD_DEFAULT_CONFIG="${DOTFILES}/formatters/prettier/prettierrc.yaml"
-
-# shell script variables
 export readonly SHELL_SCRIPTS_PATH="${HOME}/shellScripts/scripts"
-export readonly BROWSER='firefox'
 
  # path to cargo binaries
 readonly CARGO_PATH="${HOME}/.cargo/bin"

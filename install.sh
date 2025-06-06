@@ -525,18 +525,14 @@ installZsh() {
 
   local -r zsh_configs_dir="${HOME}/.config/zsh"
 
-  symlink 'zsh/zshrc' "${HOME}/.zshrc" &&
+  symlink 'zsh/zprofile' "${HOME}/.zprofile" &&
+    symlink 'zsh/zshrc' "${HOME}/.zshrc" &&
     createDirIfItDoesntExist "$zsh_configs_dir" &&
     symlink 'zsh/aliases.zsh' "${zsh_configs_dir}/aliases.zsh" &&
     symlink 'zsh/exports.zsh' "${zsh_configs_dir}/exports.zsh" &&
     symlink 'zsh/functions.zsh' "${zsh_configs_dir}/functions.zsh"
 
   [[ $? -ne 0 ]] && return 1
-
-  askBooleanQuestion "Would you like to also symlink 'zprofile' (automatically starts Xorg session)?"
-  if [[ $? -eq $TRUE ]]; then
-    symlink 'zsh/zprofile' "${HOME}/.zprofile" || return 1
-  fi
 
   [[ $is_installation_successful -eq $TRUE ]] && addInstalledConfig 'zsh'
 }
