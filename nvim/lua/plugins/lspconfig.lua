@@ -89,7 +89,12 @@ return {
     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
       group = vim.api.nvim_create_augroup("floatDiagnosticCursor", { clear = true }),
       callback = function()
-        vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
+        vim.diagnostic.open_float(nil, {
+          focusable = false,
+          scope = "cursor",
+          close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+          source = "always",
+        })
       end,
     })
 
