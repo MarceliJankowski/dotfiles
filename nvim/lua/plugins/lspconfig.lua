@@ -2,77 +2,59 @@ return {
   "neovim/nvim-lspconfig", -- collection of default neovim LSP client configs
   lazy = false,
   config = function()
-    local lspconfig = require("lspconfig")
-
-    --------------------------------------------------
-    --            SERVER CONFIG DEFAULTS            --
-    --------------------------------------------------
-
-    lspconfig.util.default_config = vim.tbl_deep_extend("force", lspconfig.util.default_config, {
-      capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    })
-
     --------------------------------------------------
     --                SERVER CONFIGS                --
     --------------------------------------------------
 
-    lspconfig.vimls.setup({})
-    lspconfig.ts_ls.setup({})
-    lspconfig.bashls.setup({})
-    lspconfig.cssls.setup({})
-    lspconfig.cssmodules_ls.setup({})
-    lspconfig.dockerls.setup({})
-    lspconfig.html.setup({})
-    lspconfig.jsonls.setup({})
-    lspconfig.marksman.setup({})
-    lspconfig.sqlls.setup({})
-    lspconfig.lemminx.setup({})
-    lspconfig.yamlls.setup({})
-    lspconfig.phpactor.setup({})
-    lspconfig.clangd.setup({})
-    lspconfig.pyright.setup({})
-    lspconfig.eslint.setup({})
-    lspconfig.emmet_ls.setup({})
-    lspconfig.ruff.setup({})
+    local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+    local default_config_servers = {
+      "vimls",
+      "ts_ls",
+      "bashls",
+      "cssls",
+      "cssmodules_ls",
+      "dockerls",
+      "html",
+      "jsonls",
+      "marksman",
+      "sqlls",
+      "lemminx",
+      "yamlls",
+      "phpactor",
+      "clangd",
+      "pyright",
+      "eslint",
+      "emmet_ls",
+      "ruff",
+    }
 
-    lspconfig.lua_ls.setup({
-      root_dir = lspconfig.util.root_pattern(".git"),
-      on_init = function(client)
-        if client.workspace_folders then
-          local path = client.workspace_folders[1].name
-          if
-            path ~= vim.fn.stdpath("config")
-            and (vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc"))
-          then
-            return
-          end
-        end
+    for _, name in ipairs(default_config_servers) do
+      vim.lsp.config(name, { capabilities = capabilities })
+      vim.lsp.enable(name)
+    end
 
-        client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
-          runtime = {
-            version = "LuaJIT",
-          },
-          -- Make the server aware of Neovim runtime files
+    vim.lsp.config("lua_ls", {
+      capabilities = capabilities,
+      settings = {
+        Lua = {
+          runtime = { version = "LuaJIT" },
           workspace = {
             checkThirdParty = false,
-            library = {
-              vim.env.VIMRUNTIME,
-            },
+            library = { vim.env.VIMRUNTIME },
           },
-        })
-      end,
-      settings = {
-        Lua = {},
+        },
       },
     })
+    vim.lsp.enable("lua_ls")
 
     --------------------------------------------------
     --                AUTO COMMANDS                 --
     --------------------------------------------------
 
     -- set keymaps for buffers with attached LSP
+    local lsp_keymaps_group = vim.api.nvim_create_augroup("LspKeymaps", {})
     vim.api.nvim_create_autocmd("LspAttach", {
-      group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+      group = lsp_keymaps_group,
       callback = function(ev)
         local keymap_opts = { buffer = ev.buf, noremap = true, silent = true }
         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, keymap_opts)
@@ -86,8 +68,9 @@ return {
     })
 
     -- display line diagnostics upon cursor hover
+    local lsp_hover_diagnostics_group = vim.api.nvim_create_augroup("LspHoverDiagnostics", { clear = true })
     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-      group = vim.api.nvim_create_augroup("floatDiagnosticCursor", { clear = true }),
+      group = lsp_hover_diagnostics_group,
       callback = function()
         vim.diagnostic.open_float(nil, {
           focusable = false,
