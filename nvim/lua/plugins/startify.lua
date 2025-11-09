@@ -7,7 +7,6 @@ return {
       { i = "$DOTFILES/nvim/init.lua" },
       { d = "$DOTFILES" },
       { n = "$NOTES" },
-      { p = "~/programming" },
       { s = "$SHELL_SCRIPTS_PATH" },
     }
 
