@@ -26,6 +26,7 @@ return {
       "eslint",
       "emmet_ls",
       "ruff",
+      "rust_analyzer",
     }
 
     for _, name in ipairs(default_config_servers) do

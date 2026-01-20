@@ -31,6 +31,7 @@ return {
       cpp = { "clang_format" },
       cs = { "clang_format" },
       tex = { "latexindent" },
+      rust = { "rustfmt" },
     },
     formatters = {
       clang_format = {
