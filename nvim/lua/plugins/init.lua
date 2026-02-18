@@ -60,9 +60,4 @@ return {
   "maxmellon/vim-jsx-pretty", -- JSX highlighting
 
   "yuezk/vim-js", -- recommended by vim-jsx-pretty
-
-  {
-    "mrcjkb/rustaceanvim", -- rust development tools
-    lazy = false, -- this plugin is already lazy
-  },
 }
