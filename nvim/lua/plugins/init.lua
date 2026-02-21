@@ -50,14 +50,4 @@ return {
     "tpope/vim-fugitive", -- gateway to git
     cmd = { "Git", "G" },
   },
-
-  --------------------------------------------------
-  --                LANGUAGE TOOLS                --
-  --------------------------------------------------
-
-  "leafgarland/typescript-vim", -- TS syntax highlighting
-
-  "maxmellon/vim-jsx-pretty", -- JSX highlighting
-
-  "yuezk/vim-js", -- recommended by vim-jsx-pretty
 }
