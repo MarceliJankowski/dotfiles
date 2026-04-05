@@ -27,8 +27,6 @@ return {
     lazy = true,
   },
 
-  { "kaicataldo/material.vim", branch = "main", priority = 1000, lazy = false }, -- color scheme
-
   --------------------------------------------------
   --                MOTION RELATED                --
   --------------------------------------------------

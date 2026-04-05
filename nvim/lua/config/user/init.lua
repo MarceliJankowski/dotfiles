@@ -1,5 +1,5 @@
+require("config.user.colors")
 require("config.user.options")
-require("config.user.colorscheme") -- comes after options to overwrite them (set transparent background)
 require("config.user.auto_commands")
 require("config.user.keymaps")
 require("config.user.macros")
