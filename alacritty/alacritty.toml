@@ -1,3 +1,4 @@
+[general]
 live_config_reload = true
 working_directory = "None"
 
@@ -26,7 +27,7 @@ white = "#eeffff"
 yellow = "#ffcb6b"
 
 [colors.primary]
-background = "#0f111a"
+background = "#000000"
 foreground = "#eeffff"
 
 [colors.selection]
