@@ -88,8 +88,8 @@ return {
     -- wiki: https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization
 
     vim.diagnostic.config({
-      virtual_text = false,
-      underline = true,
+      virtual_text = true,
+      underline = false,
       update_in_insert = false,
       severity_sort = true,
       signs = {
