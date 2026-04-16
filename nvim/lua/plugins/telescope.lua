@@ -1,6 +1,6 @@
 return {
   "nvim-telescope/telescope.nvim", -- fuzzy finder
-  branch = "0.1.x",
+  version = "*",
   dependencies = {
     "nvim-lua/plenary.nvim", -- collection of nvim lua functions
     "nvim-telescope/telescope-media-files.nvim", -- extension for viewing media files
