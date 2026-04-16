@@ -42,13 +42,9 @@ return {
     autotag = {
       enable = true, -- enable nvim-ts-autotag
     },
-
-    autopairs = {
-      enable = true, -- enable nvim-autopairs
-    },
   },
   config = function(_, opts)
-    require("nvim-treesitter.configs").setup(opts)
+    require("nvim-treesitter").setup(opts)
 
     -- skip backwards compatibility routines and speed up loading
     vim.g.skip_ts_context_commentstring_module = true
