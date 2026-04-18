@@ -3,7 +3,6 @@ return {
   version = "*",
   dependencies = {
     "nvim-lua/plenary.nvim", -- collection of nvim lua functions
-    "nvim-telescope/telescope-media-files.nvim", -- extension for viewing media files
   },
   opts = {
     defaults = {
@@ -16,26 +15,19 @@ return {
         end,
       },
     },
-    extensions = {
-      media_files = {
-        filetypes = { "png", "webp", "jpg", "jpeg" },
-        find_cmd = "rg", -- defaults to `fd` (ripgrep is faster)
-      },
-    },
+    extensions = {},
   },
   config = function(_, opts)
     local telescope = require("telescope")
     local telescope_builtin = require("telescope.builtin")
 
     telescope.setup(opts)
-    telescope.load_extension("media_files")
 
     -- KEYMAPS
     vim.keymap.set("n", "<leader>ff", telescope_builtin.find_files)
     vim.keymap.set("n", "<leader>fg", telescope_builtin.live_grep)
     vim.keymap.set("n", "<leader>fb", telescope_builtin.buffers)
     vim.keymap.set("n", "<leader>fh", telescope_builtin.help_tags)
-    vim.keymap.set("n", "<leader>fm", telescope.extensions.media_files.media_files)
 
     -- show hidden files (except for '.git' directory), and hide blobs/trees from '.gitignore'
     vim.keymap.set(
