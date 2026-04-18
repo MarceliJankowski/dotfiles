@@ -34,28 +34,9 @@ map("i", "<C-j>", "<Nop>", opts)
 -- joins current line with the next one
 map("n", "J", "<Nop>", opts)
 
--- this one's used in the 'RUN/EVAL' section
-map("n", "<leader>r", "<Nop>", opts)
-
 -- these ones introduce delay to <C-w> (close current buffer) keymap
 vim.api.nvim_del_keymap("n", "<C-w>d")
 vim.api.nvim_del_keymap("n", "<C-w><C-d>")
-
---------------------------------------------------
---                   RUN/EVAL                   --
---------------------------------------------------
-
--- evaluate current buffer with node
-map("n", "<leader>rj", "<Cmd>write | !node %<CR>", opts)
-
--- evaluate current buffer with shell
-map("n", "<leader>rs", "<Cmd>write | !./%<CR>", opts)
-
--- source current buffer
-map("n", "<leader>rv", "<Cmd>source %<CR>", opts)
-
--- run make
-map("n", "<leader>rm", "<Cmd>make<CR>", opts)
 
 --------------------------------------------------
 --                BUFFER RELATED                --
