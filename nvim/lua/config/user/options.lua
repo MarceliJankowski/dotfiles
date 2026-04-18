@@ -41,7 +41,4 @@ vim.opt.shortmess:append("c") -- don't pass messages to ins-completion-menu (req
 vim.opt.timeoutlen = 400 -- time in milliseconds vim will wait for a mapped sequence to complete
 vim.opt.backup = false -- don't create file backups
 vim.opt.writebackup = false -- don't create backups whenever file is about to get overwritten
-
--- enable cursor blinking (kinda finicky in TMUX), and change cursor apperance in INSERT mode to thin beam ('|')
-vim.opt.guicursor =
-  "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
+vim.opt.guicursor = "n-v-c:block,i-ci-ve:ver25,r-cr-o:hor20" -- change cursor appearance based on mode
