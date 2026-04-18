@@ -42,8 +42,8 @@ vim.api.nvim_del_keymap("n", "<C-w><C-d>")
 --                BUFFER RELATED                --
 --------------------------------------------------
 
--- quit current buffer
-map("n", "<C-q>", "<Cmd>q<CR>", opts)
+-- delete current buffer
+map("n", "<C-w>", "<Cmd>bdelete<CR>", opts)
 
 -- forcefully quit current buffer (disregard unsaved changes)
 map("n", "QQ", "<Cmd>q!<CR>", opts)
@@ -78,8 +78,11 @@ map("n", "<leader>w", function()
 end, opts)
 
 --------------------------------------------------
---                 PANE RELATED                 --
+--                WINDOW RELATED                --
 --------------------------------------------------
+
+-- quit current window
+map("n", "<C-q>", "<Cmd>quit<CR>", opts)
 
 -- open new horizontal split
 map("n", "<leader>h", "<Cmd>split<CR>", opts)
@@ -87,25 +90,25 @@ map("n", "<leader>h", "<Cmd>split<CR>", opts)
 -- open new vertical split
 map("n", "<leader>v", "<Cmd>vsplit<CR>", opts)
 
--- resize panes / size them evenly (each one of them will take up 1 fraction of available space)
+-- resize windows / size them evenly (each one of them will take up 1 fraction of available space)
 map("n", "<leader>=", "<C-w>=", opts)
 
--- close all panes except the current one
+-- close all windows except the current one
 map("n", "<leader>o", "<Cmd>only<CR>", opts)
 
--- resize panes
+-- resize windows
 map("n", "<M-j>", "<Cmd>resize -5<CR>", opts)
 map("n", "<M-k>", "<Cmd>resize +5<CR>", opts)
 map("n", "<M-h>", "<Cmd>vertical resize -5<CR>", opts)
 map("n", "<M-l>", "<Cmd>vertical resize +5<CR>", opts)
 
--- swap panes
+-- swap windows
 map("n", "<leader>[", "<C-w>H", opts)
 map("n", "<leader>]", "<C-w>L", opts)
 map("n", "<leader>{", "<C-w>K", opts)
 map("n", "<leader>}", "<C-w>J", opts)
 
--- move between panes
+-- move between windows
 map({ "n", "v" }, "<c-h>", "<c-w>h", opts)
 map({ "n", "v" }, "<c-l>", "<c-w>l", opts)
 map({ "n", "v" }, "<c-k>", "<c-w>k", opts)

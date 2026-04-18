@@ -11,13 +11,6 @@ return {
 
   "kshenoy/vim-signature", -- displays and manages marks
 
-  {
-    "moll/vim-bbye", -- deletes buffers without messing up layout
-    keys = {
-      { "<C-w>", "<Cmd>Bdelete<CR>", mode = { "n", "v", "x" } },
-    },
-  },
-
   --------------------------------------------------
   --                    VISUAL                    --
   --------------------------------------------------
