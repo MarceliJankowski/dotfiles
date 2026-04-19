@@ -32,6 +32,4 @@ alias rfdirv='rfdir && $EDITOR .'
 # other
 alias dotfiles='$EDITOR $DOTFILES'
 alias notes='$EDITOR $NOTES'
-alias docker-compse='docker-compose'
-alias t='tmux'
 alias u='cd ..'
