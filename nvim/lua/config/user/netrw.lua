@@ -3,7 +3,6 @@
 --------------------------------------------------
 
 local map = vim.keymap.set
-local original_timeoutlen = vim.o.timeoutlen
 local opts = { noremap = true, silent = true, buffer = true }
 local opts_recursive = { remap = true, silent = true, buffer = true }
 
@@ -33,9 +32,6 @@ local function get_cursor_position()
 end
 
 local function apply_netrw_mappings()
-  -- minimizing annoying delay between commands by lowering 'timeoutlen' inside netrw, and then restoring it with 'restoreTimeoutlen' augroup
-  vim.opt.timeoutlen = 150 -- sweet spot, provides enough time to finish command sequences yet still feels "blazingly" fast
-
   -- quit netrw
   map("n", "q", "<Cmd>bdelete<CR>", opts)
   map("n", "<C-q>", "<Cmd>bdelete<CR>", opts)
@@ -102,13 +98,3 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "netrw",
   callback = apply_netrw_mappings,
 })
-
-vim.api.nvim_create_autocmd(
-  "BufEnter", -- I know it's not ideal, I just didn't have the willpower to find a better/cleaner way of handling this...
-  {
-    desc = "restore 'timeoutlen' to its original value (from before netrw mappings were applied)",
-    group = vim.api.nvim_create_augroup("restoreTimeoutlen", { clear = true }),
-    pattern = "*",
-    command = "set timeoutlen=" .. original_timeoutlen,
-  }
-)
