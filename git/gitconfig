@@ -19,12 +19,6 @@
   lci = !git log --oneline | head -n1 | cut -d ' ' -f 1 # Last Commit Identifier
   cc = !git log --oneline | wc -l # Commit Count
   showf = !git --no-pager show --name-only --pretty=''
-
-  # difftastic aliases
-  logd = -c diff.external=difft log --ext-diff --patch
-  showd = -c diff.external=difft show --ext-diff
-  diffd = -c diff.external=difft diff
-  diffsd = -c diff.external=difft diff --staged
 [core]
 	editor = $EDITOR
 [help]
