@@ -2,7 +2,6 @@ return {
   "nvim-treesitter/nvim-treesitter", -- interface for treesitter parser generator. Exposes various features, such as enchanced syntax highlighting
   build = ":TSUpdate",
   dependencies = {
-    "JoosepAlviste/nvim-ts-context-commentstring", -- context aware commenting
     "windwp/nvim-ts-autotag", -- automatically closes and renames HTML tags
   },
   opts = {
@@ -43,14 +42,4 @@ return {
       enable = true, -- enable nvim-ts-autotag
     },
   },
-  config = function(_, opts)
-    require("nvim-treesitter").setup(opts)
-
-    -- skip backwards compatibility routines and speed up loading
-    vim.g.skip_ts_context_commentstring_module = true
-
-    require("ts_context_commentstring").setup({
-      enable_autocmd = false, -- disable autocmd so that this extension is only triggered when commenting (Comment.nvim plugin has a pre_hook for this one)
-    })
-  end,
 }
