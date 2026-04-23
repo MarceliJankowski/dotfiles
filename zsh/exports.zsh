@@ -4,7 +4,7 @@
 
 export readonly EDITOR='nvim'
 export readonly VISUAL='nvim'
-export readonly BROWSER='brave'
+export readonly BROWSER='firefox'
 export readonly DOTFILES="${HOME}/dotfiles"
 export readonly NOTES="${HOME}/notes"
 export readonly FUZZY_FINDER='fzf'
