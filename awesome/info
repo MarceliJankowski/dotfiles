@@ -9,4 +9,6 @@ My config also uses several widgets comming from:
 
   - awesome-wm-widgets:
     URL: https://pavelmakhov.com/awesome-wm-widgets
-    install: $ git clone https://github.com/streetturtle/awesome-wm-widgets ~/.config/awesome/awesome-wm-widgets
+    install:
+      - $ git clone https://github.com/streetturtle/awesome-wm-widgets ~/.config/awesome/awesome-wm-widgets
+      - arc-icon-theme needs to be installed on the system
