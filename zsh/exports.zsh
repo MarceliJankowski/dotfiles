@@ -4,12 +4,14 @@
 
 export readonly EDITOR='nvim'
 export readonly VISUAL='nvim'
+export readonly BROWSER='brave'
 export readonly DOTFILES="${HOME}/dotfiles"
 export readonly NOTES="${HOME}/notes"
 export readonly FUZZY_FINDER='fzf'
 export readonly FZF_DEFAULT_COMMAND="fd --type f --ignore --hidden --exclude={.git,node_modules,bin,build,dist}"
 export readonly PRETTIERD_DEFAULT_CONFIG="${DOTFILES}/formatters/prettier/prettierrc.yaml"
 export readonly SHELL_SCRIPTS_PATH="${HOME}/shellScripts/scripts"
+
 
  # path to cargo binaries
 readonly CARGO_PATH="${HOME}/.cargo/bin"
