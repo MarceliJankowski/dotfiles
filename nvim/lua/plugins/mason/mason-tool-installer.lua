@@ -33,6 +33,7 @@ return {
       "emmet-ls",
       "ruff",
       "lua-language-server",
+      "rust-analyzer",
     },
   },
 }
