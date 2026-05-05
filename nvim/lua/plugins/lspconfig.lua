@@ -54,7 +54,10 @@ return {
         capabilities = capabilities,
         settings = {
           ["rust-analyzer"] = {
-            check = { command = "clippy" },
+            check = {
+              command = "clippy",
+              workspace = false,
+            },
             checkOnSave = true,
           },
         },
