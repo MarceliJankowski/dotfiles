@@ -187,5 +187,5 @@ map("n", "Y", "y$", opts)
 -- quickly edit 'nvim/init.lua'
 map("n", "<leader>i", "<Cmd>edit ${DOTFILES}/nvim/init.lua<CR>", opts)
 
--- open netrw
-map("n", "<leader>n", "<Cmd>Explore<CR>", opts)
+-- open netrw file explorer
+map("n", "<leader>e", "<Cmd>Explore<CR>", opts)

@@ -35,7 +35,7 @@ local function apply_netrw_mappings()
   -- quit netrw
   map("n", "q", "<Cmd>bdelete<CR>", opts)
   map("n", "<C-q>", "<Cmd>bdelete<CR>", opts)
-  map("n", "<leader>n", "<Cmd>bdelete<CR>", opts)
+  map("n", "<leader>e", "<Cmd>bdelete<CR>", opts)
 
   -- navigate between panes
   map("n", "<C-l>", "<Cmd>wincmd l<CR>", opts)
