@@ -363,10 +363,6 @@ globalkeys = gears.table.join(
   awful.key({ modkey }, "t", function()
     awful.spawn(terminal)
   end, { description = "open terminal", group = "launcher" }),
-  awful.key({ modkey }, "b", function()
-    local browser = assert(os.getenv("BROWSER"), "BROWSER env variable is not set")
-    awful.spawn(browser)
-  end, { description = "open browser", group = "launcher" }),
   awful.key({ modkey, "Control", "Shift" }, "l", function()
     awful.spawn("betterlockscreen --lock")
   end, { description = "lock screen", group = "launcher" }),
