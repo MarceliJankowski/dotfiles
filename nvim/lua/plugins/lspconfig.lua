@@ -26,7 +26,6 @@ return {
       "eslint",
       "emmet_ls",
       "ruff",
-      "rust_analyzer",
     }
 
     for _, name in ipairs(default_config_servers) do
@@ -34,19 +33,34 @@ return {
       vim.lsp.enable(name)
     end
 
-    vim.lsp.config("lua_ls", {
-      capabilities = capabilities,
-      settings = {
-        Lua = {
-          runtime = { version = "LuaJIT" },
-          workspace = {
-            checkThirdParty = false,
-            library = { vim.env.VIMRUNTIME },
+    do
+      vim.lsp.config("lua_ls", {
+        capabilities = capabilities,
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            workspace = {
+              checkThirdParty = false,
+              library = { vim.env.VIMRUNTIME },
+            },
           },
         },
-      },
-    })
-    vim.lsp.enable("lua_ls")
+      })
+      vim.lsp.enable("lua_ls")
+    end
+
+    do
+      vim.lsp.config("rust_analyzer", {
+        capabilities = capabilities,
+        settings = {
+          ["rust-analyzer"] = {
+            check = { command = "clippy" },
+            checkOnSave = true,
+          },
+        },
+      })
+      vim.lsp.enable("rust_analyzer")
+    end
 
     --------------------------------------------------
     --                AUTO COMMANDS                 --
