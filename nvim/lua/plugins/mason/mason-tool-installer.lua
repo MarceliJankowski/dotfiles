@@ -3,17 +3,11 @@ return {
   dependencies = { "williamboman/mason.nvim" },
   opts = {
     ensure_installed = {
-      -- formatters
       "stylua",
       "shfmt",
       "prettierd",
       "latexindent",
-      -- "clang-format", -- use binary from PATH to ensure formatting consistency across nvim and other tooling
-
-      -- linters
       "phpstan",
-
-      -- language servers
       "vim-language-server",
       "typescript-language-server",
       "bash-language-server",
@@ -34,6 +28,8 @@ return {
       "ruff",
       "lua-language-server",
       "rust-analyzer",
+      "taplo",
+      -- "clang-format", -- use binary from PATH to ensure formatting consistency across nvim and other tooling
     },
   },
 }

@@ -21,6 +21,7 @@ return {
       cs = { "clang_format" },
       tex = { "latexindent" },
       rust = { "rustfmt" },
+      toml = { "taplo" },
     },
     formatters = {
       clang_format = {
