@@ -8,31 +8,24 @@
 -- command: "c"
 
 --------------------------------------------------
---               MODULE VARIABLES               --
---------------------------------------------------
-
-local map = vim.keymap.set
-local opts = { noremap = true, silent = true }
-
---------------------------------------------------
 --                   DISABLE                    --
 --------------------------------------------------
 -- most of these are disabled cause I typed them on accident...
 
 -- performs keyword lookup
-map("n", "K", "<Nop>", opts)
+vim.keymap.set("n", "K", "<Nop>")
 
 -- shell shortcut for suspending current process
-map({ "n", "i", "v" }, "<C-z>", "<Nop>", opts)
+vim.keymap.set({ "n", "i", "v" }, "<C-z>", "<Nop>")
 
 -- prevent leader key from moving my cursor
-map("n", vim.g.mapleader, "<Nop>", opts)
+vim.keymap.set("n", vim.g.mapleader, "<Nop>")
 
 -- works like 'Enter' key
-map("i", "<C-j>", "<Nop>", opts)
+vim.keymap.set("i", "<C-j>", "<Nop>")
 
 -- joins current line with the next one
-map("n", "J", "<Nop>", opts)
+vim.keymap.set("n", "J", "<Nop>")
 
 -- these ones introduce delay to <C-w> (close current buffer) keymap
 vim.api.nvim_del_keymap("n", "<C-w>d")
@@ -43,31 +36,31 @@ vim.api.nvim_del_keymap("n", "<C-w><C-d>")
 --------------------------------------------------
 
 -- delete current buffer
-map("n", "<C-w>", "<Cmd>bdelete<CR>", opts)
+vim.keymap.set("n", "<C-w>", "<Cmd>bdelete<CR>")
 
 -- forcefully quit current buffer (disregard unsaved changes)
-map("n", "QQ", "<Cmd>q!<CR>", opts)
+vim.keymap.set("n", "QQ", "<Cmd>q!<CR>")
 
 -- write to current buffer
-map({ "n", "i", "x", "v" }, "<C-s>", "<Cmd>write<CR>", opts)
+vim.keymap.set({ "n", "i", "x", "v" }, "<C-s>", "<Cmd>write<CR>")
 
 -- write to current buffer and delete every other unmodified buffer
-map("n", "<leader>bo", "<Cmd>write | %bd | edit # | bd #<CR>", opts) -- '%bd' deletes all buffers
+vim.keymap.set("n", "<leader>bo", "<Cmd>write | %bd | edit # | bd #<CR>") -- '%bd' deletes all buffers
 
 -- write to current buffer and edit new unnamed buffer
-map({ "n", "i" }, "<C-t>", "<Cmd>write | enew<CR>", opts)
+vim.keymap.set({ "n", "i" }, "<C-t>", "<Cmd>write | enew<CR>")
 
 -- go to newer cursor position in jump list ('TAB' and 'CTRL-I' both correspond to the same keycode)
-map("n", "<C-n>", "<C-i>", opts)
+vim.keymap.set("n", "<C-n>", "<C-i>")
 
 -- go to the next buffer
-map("n", "<Tab>", "<Cmd>bnext<CR>", opts)
+vim.keymap.set("n", "<Tab>", "<Cmd>bnext<CR>")
 
 -- go to the previous buffer
-map("n", "<S-Tab>", "<Cmd>bprevious<CR>", opts)
+vim.keymap.set("n", "<S-Tab>", "<Cmd>bprevious<CR>")
 
 -- forcefully delete current buffer if it's unnamed
-map("n", "<leader>w", function()
+vim.keymap.set("n", "<leader>w", function()
   local buffer_name = vim.api.nvim_buf_get_name(0)
 
   if buffer_name == "" then
@@ -75,126 +68,126 @@ map("n", "<leader>w", function()
   else
     print("buffer: '" .. buffer_name .. "' has a name!")
   end
-end, opts)
+end)
 
 --------------------------------------------------
 --                WINDOW RELATED                --
 --------------------------------------------------
 
 -- quit current window
-map("n", "<C-q>", "<Cmd>quit<CR>", opts)
+vim.keymap.set("n", "<C-q>", "<Cmd>quit<CR>")
 
 -- open new horizontal split
-map("n", "<leader>h", "<Cmd>split<CR>", opts)
+vim.keymap.set("n", "<leader>h", "<Cmd>split<CR>")
 
 -- open new vertical split
-map("n", "<leader>v", "<Cmd>vsplit<CR>", opts)
+vim.keymap.set("n", "<leader>v", "<Cmd>vsplit<CR>")
 
 -- resize windows / size them evenly (each one of them will take up 1 fraction of available space)
-map("n", "<leader>=", "<C-w>=", opts)
+vim.keymap.set("n", "<leader>=", "<C-w>=")
 
 -- close all windows except the current one
-map("n", "<leader>o", "<Cmd>only<CR>", opts)
+vim.keymap.set("n", "<leader>o", "<Cmd>only<CR>")
 
 -- resize windows
-map("n", "<M-j>", "<Cmd>resize -5<CR>", opts)
-map("n", "<M-k>", "<Cmd>resize +5<CR>", opts)
-map("n", "<M-h>", "<Cmd>vertical resize -5<CR>", opts)
-map("n", "<M-l>", "<Cmd>vertical resize +5<CR>", opts)
+vim.keymap.set("n", "<M-j>", "<Cmd>resize -5<CR>")
+vim.keymap.set("n", "<M-k>", "<Cmd>resize +5<CR>")
+vim.keymap.set("n", "<M-h>", "<Cmd>vertical resize -5<CR>")
+vim.keymap.set("n", "<M-l>", "<Cmd>vertical resize +5<CR>")
 
 -- swap windows
-map("n", "<leader>[", "<C-w>H", opts)
-map("n", "<leader>]", "<C-w>L", opts)
-map("n", "<leader>{", "<C-w>K", opts)
-map("n", "<leader>}", "<C-w>J", opts)
+vim.keymap.set("n", "<leader>[", "<C-w>H")
+vim.keymap.set("n", "<leader>]", "<C-w>L")
+vim.keymap.set("n", "<leader>{", "<C-w>K")
+vim.keymap.set("n", "<leader>}", "<C-w>J")
 
 -- move between windows
-map({ "n", "v" }, "<c-h>", "<c-w>h", opts)
-map({ "n", "v" }, "<c-l>", "<c-w>l", opts)
-map({ "n", "v" }, "<c-k>", "<c-w>k", opts)
-map({ "n", "v" }, "<c-j>", "<c-w>j", opts)
+vim.keymap.set({ "n", "v" }, "<c-h>", "<c-w>h")
+vim.keymap.set({ "n", "v" }, "<c-l>", "<c-w>l")
+vim.keymap.set({ "n", "v" }, "<c-k>", "<c-w>k")
+vim.keymap.set({ "n", "v" }, "<c-j>", "<c-w>j")
 
 --------------------------------------------------
 --          QUICKFIX LIST IMPROVEMENTS          --
 --------------------------------------------------
 
 -- open quickfix window
-map("n", "<M-q>", "<Cmd>copen<CR>")
+vim.keymap.set("n", "<M-q>", "<Cmd>copen<CR>")
 
 -- close quickfix window
-map("n", "<M-Q>", "<Cmd>cclose<CR>")
+vim.keymap.set("n", "<M-Q>", "<Cmd>cclose<CR>")
 
 -- move through quickfix entries
-map("n", "<M-n>", "<cmd>cnext<CR>zz")
-map("n", "<M-N>", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<M-n>", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "<M-N>", "<cmd>cprev<CR>zz")
 
 --------------------------------------------------
 --                 COMMAND LINE                 --
 --------------------------------------------------
 
 -- shrink command line to 1 unit of height (line), and increase current window's size by 100
-map("n", "<leader>d", "<Cmd>set cmdheight=1 | resize +100<CR>", opts)
+vim.keymap.set("n", "<leader>d", "<Cmd>set cmdheight=1 | resize +100<CR>")
 
 -- clear command line
-map("n", "<leader>c", "<Cmd>echo ''<CR>", opts)
+vim.keymap.set("n", "<leader>c", "<Cmd>echo ''<CR>")
 
 --------------------------------------------------
 --           VISUAL MODE IMPROVEMENTS           --
 --------------------------------------------------
 
 -- shift selected text
-map({ "v", "x" }, "<Tab>", ">gv", opts)
-map({ "v", "x" }, "<S-Tab>", "<gv", opts)
+vim.keymap.set({ "v", "x" }, "<Tab>", ">gv")
+vim.keymap.set({ "v", "x" }, "<S-Tab>", "<gv")
 
 -- I typed these accidentally...
-map({ "v", "x" }, "K", "k", opts)
-map({ "v", "x" }, "J", "j", opts)
+vim.keymap.set({ "v", "x" }, "K", "k")
+vim.keymap.set({ "v", "x" }, "J", "j")
 
 -- comment/uncomment
-map({ "v", "x" }, "<C-/>", "gc", { remap = true })
+vim.keymap.set({ "v", "x" }, "<C-/>", "gc", { remap = true })
 
 --------------------------------------------------
 --           INSERT MODE IMPROVEMENTS           --
 --------------------------------------------------
 
 -- delete preceding word
-map("i", "<C-BS>", "<C-w>", opts)
-map("i", "<C-h>", "<C-w>", opts) -- TMUX registers <C-BS> as <C-h>
+vim.keymap.set("i", "<C-BS>", "<C-w>")
+vim.keymap.set("i", "<C-h>", "<C-w>") -- TMUX registers <C-BS> as <C-h>
 
 -- shift tab
-map("i", "<S-Tab>", "<C-d>", opts)
+vim.keymap.set("i", "<S-Tab>", "<C-d>")
 
 --------------------------------------------------
 --           NORMAL MODE IMPROVEMENTS           --
 --------------------------------------------------
 
 -- center the screen and open just enough folds to make the cursor visible
-map("n", "n", "nzzzv", opts)
-map("n", "N", "Nzzzv", opts)
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
 
 -- center the screen
-map("n", "<C-d>", "<C-d>zz", opts)
-map("n", "<C-u>", "<C-u>zz", opts)
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 -- move to the end of the word
-map("n", "gUiw", "gUiwe", opts)
-map("n", "guiw", "guiwe", opts)
+vim.keymap.set("n", "gUiw", "gUiwe")
+vim.keymap.set("n", "guiw", "guiwe")
 
 -- behave like other capital commands
-map("n", "Y", "y$", opts)
+vim.keymap.set("n", "Y", "y$")
 
 -- comment/uncomment
-map("n", "<C-/>", "gcc", { remap = true })
+vim.keymap.set("n", "<C-/>", "gcc", { remap = true })
 
 --------------------------------------------------
 --               OTHER SHORTCUTS                --
 --------------------------------------------------
 
 -- quickly edit 'nvim/init.lua'
-map("n", "<leader>i", "<Cmd>edit ${DOTFILES}/nvim/init.lua<CR>", opts)
+vim.keymap.set("n", "<leader>i", "<Cmd>edit ${DOTFILES}/nvim/init.lua<CR>")
 
 -- open netrw file explorer
-map("n", "<leader>e", "<Cmd>Explore<CR>", opts)
+vim.keymap.set("n", "<leader>e", "<Cmd>Explore<CR>")
 
 -- open notes
-map("n", "<leader>n", "<Cmd>edit ${NOTES}<CR>", opts)
+vim.keymap.set("n", "<leader>n", "<Cmd>edit ${NOTES}<CR>")
