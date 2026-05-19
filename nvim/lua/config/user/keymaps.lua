@@ -150,6 +150,9 @@ map({ "v", "x" }, "<S-Tab>", "<gv", opts)
 map({ "v", "x" }, "K", "k", opts)
 map({ "v", "x" }, "J", "j", opts)
 
+-- comment/uncomment
+map({ "v", "x" }, "<C-/>", "gc", { remap = true })
+
 --------------------------------------------------
 --           INSERT MODE IMPROVEMENTS           --
 --------------------------------------------------
@@ -179,6 +182,9 @@ map("n", "guiw", "guiwe", opts)
 
 -- behave like other capital commands
 map("n", "Y", "y$", opts)
+
+-- comment/uncomment
+map("n", "<C-/>", "gcc", { remap = true })
 
 --------------------------------------------------
 --               OTHER SHORTCUTS                --
