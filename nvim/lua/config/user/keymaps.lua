@@ -145,6 +145,7 @@ vim.keymap.set({ "v", "x" }, "J", "j")
 
 -- comment/uncomment
 vim.keymap.set({ "v", "x" }, "<C-/>", "gc", { remap = true })
+vim.keymap.set({ "v", "x" }, "<C-_>", "gc", { remap = true }) -- TMUX fix
 
 --------------------------------------------------
 --           INSERT MODE IMPROVEMENTS           --
@@ -178,6 +179,7 @@ vim.keymap.set("n", "Y", "y$")
 
 -- comment/uncomment
 vim.keymap.set("n", "<C-/>", "gcc", { remap = true })
+vim.keymap.set("n", "<C-_>", "gcc", { remap = true }) -- TMUX fix
 
 --------------------------------------------------
 --               OTHER SHORTCUTS                --
