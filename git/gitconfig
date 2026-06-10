@@ -7,6 +7,7 @@
 	lg = log --oneline
 	st = status -s
 	ls = ls-files
+  pullr = pull --rebase
 	diffs = diff --staged
 	stall = stash --all
 	fop = fetch origin --prune
