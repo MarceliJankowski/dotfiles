@@ -1,38 +1,38 @@
 [user]
-	email = marcelijankowski123@gmail.com
-	name = Marceli Jankowski
+  email = marcelijankowski123@gmail.com
+  name = Marceli Jankowski
 [credential]
-	helper = store # https://git-scm.com/docs/git-credential-store
+  helper = store # https://git-scm.com/docs/git-credential-store
 [alias]
-	lg = log --oneline
-	st = status -s
-	ls = ls-files
+  lg = log --oneline
+  st = status -s
+  ls = ls-files
   pullr = pull --rebase
-	diffs = diff --staged
-	stall = stash --all
-	fop = fetch origin --prune
+  diffs = diff --staged
+  stall = stash --all
+  fop = fetch origin --prune
   pushf = push --force-with-lease
   bblame = blame -w -C -C -C # better blame
   rdir = rev-parse --show-toplevel
-	camend = commit --amend
-	cane = commit --amend --no-edit # Commit Amend No Edit
+  camend = commit --amend
+  cane = commit --amend --no-edit # Commit Amend No Edit
   lc = !git log --oneline | head -n1 # Last Commit
   lci = !git log --oneline | head -n1 | cut -d ' ' -f 1 # Last Commit Identifier
   cc = !git log --oneline | wc -l # Commit Count
   showf = !git --no-pager show --name-only --pretty=''
 [core]
-	editor = $EDITOR
+  editor = $EDITOR
 [help]
-	autocorrect = 1
+  autocorrect = 1
   autocrlf = input
 [init]
-	defaultBranch = main
+  defaultBranch = main
 [branch]
-	sort = -committerdate
+  sort = -committerdate
 [push]
-	default = upstream
+  default = upstream
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
