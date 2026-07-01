@@ -75,7 +75,7 @@ return {
         local keymap_opts = { buffer = ev.buf, noremap = true, silent = true }
         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, keymap_opts)
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, keymap_opts)
-        vim.keymap.set("n", "gh", vim.lsp.buf.hover, keymap_opts)
+        vim.keymap.set("n", "K", vim.lsp.buf.hover, keymap_opts)
         vim.keymap.set("n", "gi", vim.lsp.buf.implementation, keymap_opts)
         vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, keymap_opts)
         vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, keymap_opts)
