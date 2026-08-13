@@ -123,9 +123,6 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = myma
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
--- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
-
 -- {{{ Wibar
 
 -- Create a wibox for each screen and add it
@@ -278,7 +275,6 @@ awful.screen.connect_for_each_screen(function(s)
       }),
       blankwidget,
       logout_menu_widget(),
-      mykeyboardlayout,
       s.mylayoutbox,
     },
   })
