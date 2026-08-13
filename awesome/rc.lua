@@ -127,8 +127,6 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
--- Create a textclock widget
-mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -278,7 +276,7 @@ awful.screen.connect_for_each_screen(function(s)
         show_current_level = true,
         font = "FiraCode Nerd Font Mono",
       }),
-      mytextclock,
+      blankwidget,
       logout_menu_widget(),
       mykeyboardlayout,
       s.mylayoutbox,
