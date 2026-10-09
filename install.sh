@@ -806,7 +806,7 @@ processConfigArgs() {
     install${config_arg^} && echo
 
     if [[ $? -ne 0 ]]; then
-      logError "$config installation failed"
+      logError "$config_arg installation failed"
       break
     fi
   done
