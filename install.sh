@@ -642,7 +642,7 @@ openOptionsMenu() {
     case "$option" in
     'u') return 0 ;;
     'd') openSetDotfilesPrompt ;;
-    'r') openSetRootCmdPromp ;;
+    'r') openSetRootCmdPrompt ;;
     'v') toggleVerboseMode ;;
     *) echo "Invalid option: '${option}'" && askToProceed ;;
     esac
@@ -660,8 +660,8 @@ openSetDotfilesPrompt() {
   DOTFILES="${HOME}/${dotfiles_path}"
 }
 
-openSetRootCmdPromp() {
-  [[ $# -ne 0 ]] && internalError "openSetRootCmdPromp() expects no arguments"
+openSetRootCmdPrompt() {
+  [[ $# -ne 0 ]] && internalError "openSetRootCmdPrompt() expects no arguments"
 
   clear
   read -p "Provide command for gaining root privileges: " ROOT_CMD
