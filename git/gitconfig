@@ -22,9 +22,9 @@
   showf = !git --no-pager show --name-only --pretty=''
 [core]
   editor = $EDITOR
+  autocrlf = input
 [help]
   autocorrect = 1
-  autocrlf = input
 [init]
   defaultBranch = main
 [branch]
