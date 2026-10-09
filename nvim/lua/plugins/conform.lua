@@ -34,7 +34,7 @@ return {
     },
     format_on_save = {
       timeout_ms = 500,
-      lsp_fallback = true, -- fallback to formatting with LSP if the formatter is not available
+      lsp_format = "fallback", -- fallback to formatting with LSP if the formatter is not available
     },
   },
 }
