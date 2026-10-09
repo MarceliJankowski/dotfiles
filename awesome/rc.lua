@@ -69,6 +69,9 @@ editor_cmd = terminal .. " -e " .. editor
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
+-- height of the status bar (in pixels)
+local statusbar_height = 28
+
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
   awful.layout.suit.tile,
@@ -237,11 +240,8 @@ awful.screen.connect_for_each_screen(function(s)
     buttons = tasklist_buttons,
   })
 
-  -- set status-bar height
-  Statusbar_height = 28
-
   -- Create the wibox
-  s.mywibox = awful.wibar({ position = "top", screen = s, height = Statusbar_height })
+  s.mywibox = awful.wibar({ position = "top", screen = s, height = statusbar_height })
 
   -- Add widgets to the wibox
   s.mywibox:setup({
@@ -399,7 +399,7 @@ globalkeys = gears.table.join(
 
   -- Dmenu (run dmenu with the height of awesome WM status bar)
   awful.key({ modkey }, "r", function()
-    awful.util.spawn("dmenu_run -h " .. Statusbar_height)
+    awful.spawn("dmenu_run -h " .. statusbar_height)
   end, { description = "run dmenu", group = "launcher" }),
 
   awful.key({ modkey }, "x", function()
@@ -407,7 +407,7 @@ globalkeys = gears.table.join(
       prompt = "Run Lua code: ",
       textbox = awful.screen.focused().mypromptbox.widget,
       exe_callback = awful.util.eval,
-      history_path = awful.util.get_cache_dir() .. "/history_eval",
+      history_path = gears.filesystem.get_cache_dir() .. "/history_eval",
     })
   end, { description = "lua execute prompt", group = "awesome" }),
 
