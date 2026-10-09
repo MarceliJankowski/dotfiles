@@ -1,45 +1,88 @@
 return {
-  "nvim-treesitter/nvim-treesitter", -- interface for treesitter parser generator. Exposes various features, such as enchanced syntax highlighting
+  "nvim-treesitter/nvim-treesitter",
+  lazy = false,
+  branch = "main",
   build = ":TSUpdate",
   dependencies = {
-    "windwp/nvim-ts-autotag", -- automatically closes and renames HTML tags
+    "windwp/nvim-ts-autotag",
   },
-  opts = {
-    -- list of parser names, or "all"
-    ensure_installed = { "c" },
+  config = function()
+    local ts = require("nvim-treesitter")
 
-    -- Install parsers synchronously (only applied to `ensure_installed`)
-    sync_install = false,
+    ts.setup({
+      install_dir = vim.fn.stdpath("data") .. "/site",
+    })
 
-    -- Automatically install missing parsers when entering buffer
-    -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-    auto_install = true,
+    local languages = {
+      "bash",
+      "c",
+      "c_sharp",
+      "cpp",
+      "css",
+      "dockerfile",
+      "html",
+      "javascript",
+      "json",
+      "latex",
+      "lua",
+      "markdown",
+      "markdown_inline",
+      "php",
+      "python",
+      "query",
+      "rust",
+      "scss",
+      "sql",
+      "toml",
+      "tsx",
+      "typescript",
+      "vim",
+      "vimdoc",
+      "xml",
+      "yaml",
+    }
 
-    -- List of parsers to ignore installing (for "all")
-    -- ignore_install = { "javascript" },
+    local disabled = {
+      css = true,
+    }
 
-    ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
-    -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+    local function enable(buf)
+      if not vim.api.nvim_buf_is_loaded(buf) then
+        return
+      end
 
-    highlight = {
-      -- `false` will disable the whole extension
-      enable = true,
+      local filetype = vim.bo[buf].filetype
+      if filetype == "" or disabled[filetype] then
+        return
+      end
 
-      -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-      -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-      -- the name of the parser)
-      -- list of languages that will be disabled
-      disable = { "css" },
+      local lang = vim.treesitter.language.get_lang(filetype)
+      if not lang or disabled[lang] or not vim.treesitter.language.add(lang) then
+        return
+      end
 
-      -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-      -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-      -- Using this option may slow down your editor, and you may see some duplicate highlights.
-      -- Instead of true it can also be a list of languages
-      additional_vim_regex_highlighting = false,
-    },
+      vim.treesitter.start(buf, lang)
+    end
 
-    autotag = {
-      enable = true, -- enable nvim-ts-autotag
-    },
-  },
+    local group = vim.api.nvim_create_augroup("treesitterHighlight", { clear = true })
+    vim.api.nvim_create_autocmd("FileType", {
+      desc = "enable treesitter highlighting",
+      group = group,
+      callback = function(ev)
+        enable(ev.buf)
+      end,
+    })
+
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      enable(buf)
+    end
+
+    ts.install(languages):await(function()
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        enable(buf)
+      end
+    end)
+
+    require("nvim-ts-autotag").setup()
+  end,
 }
