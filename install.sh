@@ -468,6 +468,8 @@ installPrettier() {
 
   echo "Installing: prettier config"
   echo "Prettier installation is tied to zsh; please refer to '${prettier_info}'"
+
+  addInstalledConfig 'prettier'
 }
 
 installStylua() {
