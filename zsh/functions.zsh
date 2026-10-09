@@ -14,7 +14,7 @@ day() {
 
 # @desc display current month
 month() {
-  echo "It's $(date '+%B'), the $(date '+%m' | awk -F '0' '{ print $NF }') month of the year."
+  echo "It's $(date '+%B'), the $(date '+%-m') month of the year."
 }
 
 # @desc display current year
