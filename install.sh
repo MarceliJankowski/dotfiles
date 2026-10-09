@@ -215,7 +215,7 @@ askToPickOption() {
   read -p "option: " option
   readonly option
 
-  trimmed_option=$(trim "$option")
+  local trimmed_option=$(trim "$option")
 
   echo "$trimmed_option"
 }
