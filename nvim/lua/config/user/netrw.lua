@@ -3,7 +3,7 @@
 --------------------------------------------------
 
 local map = vim.keymap.set
-local opts = { noremap = true, silent = true, buffer = true }
+local opts = { remap = false, silent = true, buffer = true }
 local opts_recursive = { remap = true, silent = true, buffer = true }
 
 --------------------------------------------------
